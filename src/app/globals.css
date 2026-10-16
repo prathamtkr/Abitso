@@ -1,0 +1,568 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 86% 97%;
+    --destructive-foreground: 0 74% 42%;
+    --border: 220 14% 96%; /* Example value */
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+    --font-size-base: 16px;
+    --font-size-sm: 14px;
+    --font-size-lg: 18px;
+    --color-primary: #3b82f6;
+    --color-primary-dark: #1e40af;
+    --color-accent: #8b5cf6;
+    --theme-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+.grainy {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAElBMVEUAAAD8/vz08vT09vT8+vzs7uxH16TeAAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAuFJREFUOI0Vk+3NLiEIRG1B8ClAYAsQ2AIEt4D9ePtv5Xp/mZgYJ2fOFJKEfInkVWY2aglmQFkimRTV7MblYyVqD7HXyhKsSuPX12MeDhRHLtGvRG+P+B/S0Vu4OswR9tmvwNPyhdCDbVayJGads/WiUWcjCvCnruTBNHS9gmX2VzVbk7ZvB1gb1hkWFGl+A/n+/FowcO34U/XvKqZ/fHY+6vgRfU92XrOBUbGeeDfQmjWjdrK+frc6FdGReQhfSF5JvR29O2QrfNw1huTwlgsyXLo0u+5So82sgv7tsFZR2nxB6lXiquHrfD8nfYZ9SeT0LiuvSoVrxGY16pCNRZKqvwWsn5OHypPBELzohMCaRaa0ceTHYqe7X/gfJEEtKFbJpWoNqO+aS1cuTykGPpK5Ga48m6L3NefTr013KqYBQu929iP1oQ/7UwSR+i3zqruUmT84qmhzLpxyj7pr9kg7LKvqaXxZmdpn+6o8sHqSqojy02gU3U8q9PnpidiaLks0mbMYz+q2uVXsoBQ8bfURULYxRgZVYCHMv9F4OA7qxT2NPPpvGQ/sTDH2yznKh7E2AcErfcNsaIoN1izzbJiaY63x4QjUFdBSvDCvugPpu5xDny0jzEeuUQbcP1aGT9V90uixngTRLYNEIIZ6yOF1H8tm7rj2JxiefsVy53zGVy3ag5uuPsdufYOzYxLRxngKe7nhx3VAq54pmz/DK9/Q3aDam2Yt3hNXB4HuU87jKNd/CKZn77Qdn5QkXPfqSkhk7hGOXXB+7v09KbBbqdvxGqa0AqfK/atIrL2WXdAgXAJ43Wtwe/aIoacXezeGPMlhDOHDbSfHnaXsL2QzbT82GRwZuezdwcoWzx5pnOnGMUdHuiY7lhdyWzWiHnucLZQxYStMJbtcydHaQ6vtMbe0AcDbxG+QG14AL94xry4297xpy9Cpf1OoxZ740gHDfrK+gtsy0xabwJmfgtCeii79B6aj0SJeLbd7AAAAAElFTkSuQmCC);
+}
+
+.scrollbar-w-2::-webkit-scrollbar {
+  width: 0.25rem;
+  height: 0.25rem;
+}
+
+.scrollbar-track-blue-lighter::-webkit-scrollbar-track {
+  --bg-opacity: 0.5;
+  background-color: #00000015;
+}
+
+.scrollbar-thumb-blue::-webkit-scrollbar-thumb {
+  --bg-opacity: 0.5;
+  background-color: #13131374;
+}
+
+.scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+  border-radius: 7px;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes gradient-x {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop-in {
+  animation: pop-in 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.7s;
+}
+
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(30px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+@keyframes move-right {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(5px);}
+  100% { transform: translateX(0);}
+}
+.animate-move-right {
+  animation: move-right 1.2s infinite;
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0);}
+  50% { transform: translateY(-6px);}
+}
+.animate-bounce-slow {
+  animation: bounce-slow 2s infinite;
+}
+
+@keyframes progress-stripes {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.animate-progress-stripes {
+  background-size: 200% 100%;
+  animation: progress-stripes 1.5s linear infinite;
+}
+
+.bubble-burst {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #ef4444 60%, transparent 100%);
+  animation: bubble-burst-anim 0.5s cubic-bezier(0.4,0,0.2,1);
+  opacity: 0.7;
+}
+@keyframes bubble-burst-anim {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  80% {
+    transform: scale(2.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(3.5);
+    opacity: 0;
+  }
+}
+
+@keyframes blob1 {
+  0%, 100% { transform: scale(1) translateY(0);}
+  50% { transform: scale(1.1) translateY(20px);}
+}
+.animate-blob1 {
+  animation: blob1 8s ease-in-out infinite;
+}
+@keyframes blob2 {
+  0%, 100% { transform: scale(1) translateY(0);}
+  50% { transform: scale(1.08) translateY(-16px);}
+}
+.animate-blob2 {
+  animation: blob2 7s ease-in-out infinite;
+}
+@keyframes blob3 {
+  0%, 100% { transform: scale(1) translate(-50%, -50%);}
+  50% { transform: scale(1.08) translate(-55%, -45%);}
+}
+.animate-blob3 {
+  animation: blob3 10s ease-in-out infinite;
+}
+
+@keyframes gradient-fade {
+  0%, 100% { filter: brightness(1);}
+  50% { filter: brightness(1.04);}
+}
+.animate-gradient-fade {
+  animation: gradient-fade 8s ease-in-out infinite;
+}
+
+@keyframes fade-in-down {
+  0% { opacity: 0; transform: translateY(-20px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+.animate-fade-in-down {
+  animation: fade-in-down 0.8s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+@keyframes slide-up {
+  0% { opacity: 0; transform: translateY(40px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+.animate-slide-up {
+  animation: slide-up 1s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+/* --- Animations for Hero/Features --- */
+@keyframes float-image {
+  0% { transform: translateY(0px);}
+  50% { transform: translateY(-18px);}
+  100% { transform: translateY(0px);}
+}
+.animate-float-image {
+  animation: float-image 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.animate-pulse-slow {
+  animation: pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg);}
+}
+.animate-spin-slow {
+  animation: spin 12s linear infinite;
+}
+
+/* --- Optional: Glass Orbs and Floating PDFs (for custom styling) --- */
+
+.glass-orb {
+  pointer-events: none;
+  filter: blur(8px) brightness(1.1);
+  opacity: 0.5;
+  mix-blend-mode: lighten;
+}
+
+.floating-pdf {
+  transition: box-shadow 0.3s, transform 0.3s;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  background: rgba(255,255,255,0.12);
+  border-radius: 1.25rem;
+  border: 1px solid rgba(80, 120, 255, 0.12);
+  backdrop-filter: blur(6px);
+}
+
+
+/* --- Optional: Particle background (if you want to add) --- */
+.particle-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  border-radius: 9999px;
+  opacity: 0.15;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+  animation: particle-float 8s ease-in-out infinite;
+}
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0);}
+  50% { transform: translateY(-40px);}
+}
+
+/* --- Animations for Lexinote Landing Page --- */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 20px; }
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
+  background-size: 400px 100%;
+  animation: shimmer 1.8s infinite linear;
+}
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+@keyframes slide-in {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes gradient-x {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+  50% { transform: translateY(0); animation-timing-function: cubic-bezier(0,0,0.2,1); }
+}
+.animate-bounce-slow {
+  animation: bounce-slow 6s infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* --- Animated Blobs for Hero Section --- */
+@keyframes blob1 {
+  0%,100% { transform: scale(1) translateY(0) translateX(0);}
+  50% { transform: scale(1.1) translateY(30px) translateX(40px);}
+}
+@keyframes blob2 {
+  0%,100% { transform: scale(1) translateY(0) translateX(0);}
+  50% { transform: scale(1.08) translateY(-20px) translateX(-30px);}
+}
+@keyframes blob3 {
+  0%,100% { transform: scale(1) translateY(0) translateX(0);}
+  50% { transform: scale(1.15) translateY(20px) translateX(-20px);}
+}
+.animate-blob1 { animation: blob1 12s ease-in-out infinite; }
+.animate-blob2 { animation: blob2 14s ease-in-out infinite; }
+.animate-blob3 { animation: blob3 16s ease-in-out infinite; }
+
+/* --- Fade In Up Animation for How It Works Steps --- */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s cubic-bezier(.4,0,.2,1);
+}
+.delay-150 {
+  animation-delay: 0.15s;
+}
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+/* --- Fade In Down Animation for Hero Badge --- */
+@keyframes fade-in-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-fade-in-down {
+  animation: fade-in-down 0.8s cubic-bezier(.4,0,.2,1);
+}
+
+/* --- Bounce Animation for Emojis --- */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0);}
+  50% { transform: translateY(-8px);}
+}
+.animate-bounce {
+  animation: bounce 1.2s infinite;
+}
+
+/* --- Floating Animation for PDF Cards --- */
+@keyframes float {
+  0% { transform: translateY(0px);}
+  50% { transform: translateY(-12px);}
+  100% { transform: translateY(0px);}
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* --- Pulse Animation for Gradients --- */
+@keyframes pulse {
+  0%, 100% { opacity: 1;}
+  50% { opacity: 0.7;}
+}
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite;
+}
+
+/* --- Spin Animation for Background Blobs --- */
+@keyframes spin {
+  100% { transform: rotate(360deg);}
+}
+.animate-spin {
+  animation: spin 12s linear infinite;
+}
+
+/* --- Shimmer Animation for PDF Preview --- */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
+  background-size: 400px 100%;
+  animation: shimmer 1.8s infinite linear;
+}
+
+/* --- Slide In Animation for Chat Messages --- */
+@keyframes slide-in {
+  0% { opacity: 0; transform: translateY(20px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+.animate-slide-in {
+  animation: slide-in 0.5s cubic-bezier(0.25,0.46,0.45,0.94) both;
+}
+
+/* --- Fade In Animation for Typing Indicator --- */
+@keyframes fade-in {
+  0% { opacity: 0;}
+  100% { opacity: 1;}
+}
+.animate-fade-in {
+  animation: fade-in 0.5s ease both;
+}
+
+/* --- Gradient Animation for CTA Section --- */
+@keyframes gradient-x {
+  0% { background-position: 0% 50%;}
+  50% { background-position: 100% 50%;}
+  100% { background-position: 0% 50%;}
+}
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 5s ease infinite;
+}
+
+/* --- Custom Scrollbar for Chat --- */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #64748b;
+  border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* --- Utility: Section Title Gradient (optional) --- */
+.section-title {
+  background: linear-gradient(90deg, #2563eb 0%, #a21caf 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+/* Enhanced AI Response Styling */
+.prose-ai {
+  @apply text-gray-700 leading-relaxed;
+}
+
+.prose-ai h1,
+.prose-ai h2,
+.prose-ai h3,
+.prose-ai h4 {
+  @apply text-gray-900 font-semibold mb-3 mt-4 first:mt-0;
+}
+
+.prose-ai h1 {
+  @apply text-xl border-b border-gray-200 pb-2;
+}
+
+.prose-ai h2 {
+  @apply text-lg;
+}
+
+.prose-ai ul {
+  @apply space-y-2 my-3 bg-gray-50/50 rounded-lg p-3 border-l-4 border-blue-500;
+}
+
+.prose-ai li {
+  @apply flex items-start gap-2 text-gray-700;
+}
+
+.prose-ai li::marker {
+  @apply hidden;
+}
+
+.prose-ai li::before {
+  content: '';
+  @apply w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0;
+}
+
+.prose-ai strong {
+  @apply font-semibold text-gray-900;
+}
+
+.prose-ai code {
+  @apply text-blue-600 bg-blue-50 px-1 py-0.5 rounded text-sm font-mono;
+}
+
+.prose-ai p {
+  @apply mb-2 leading-relaxed text-gray-700;
+}
+
+/* Smooth message animations */
+@keyframes message-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.message-enter {
+  animation: message-slide-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Add to your globals.css file */
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.8s ease-out;
+}

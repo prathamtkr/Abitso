@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    String @id @unique
+  email String @unique
+
+  // Add timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Profile settings
+  displayName String?
+  imageUrl    String?
+
+  // Appearance settings
+  theme       String? @default("system")
+  accentColor String? @default("blue")
+  fontSize    Int?    @default(16)
+
+  // Document settings
+  defaultZoom            Int?     @default(100)
+  autoSave              Boolean? @default(true)
+  defaultHighlightColor String?  @default("#ffeb3b")
+  autoDelete            Int?     @default(90)
+
+  // Notification settings
+  emailNotifications    Boolean? @default(true)
+  processingAlerts     Boolean? @default(true)
+  weeklyDigest         Boolean? @default(false)
+  browserNotifications Boolean? @default(true)
+
+  // Privacy settings
+  analyticsOptOut Boolean? @default(false)
+  shareUsageData  Boolean? @default(true)
+  publicProfile   Boolean? @default(false)
+
+
+
+  // Keep existing relationships and Stripe fields
+  File File[]
+  Message Message[]
+
+  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+}
+
+enum UploadStatus {
+  PENDING
+  PROCESSING
+  FAILED
+  SUCCESS
+}
+
+model File {
+  id          String   @id @default(cuid())
+  name        String
+  uploadStatus UploadStatus @default(PENDING)
+  url         String
+  key         String
+
+  // ADD THESE FIELDS
+  iconIndex   Int      @default(0)
+  colorIndex  Int      @default(0) 
+  viewCount   Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
+  Message Message[]
+  PdfHighlight PdfHighlight[]
+}
+
+model Message {
+  id   String @id @default(cuid())
+  text String
+
+  isUserMessage Boolean
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
+  File   File?   @relation(fields: [fileId], references: [id])
+  fileId String?
+}
+
+model PdfHighlight {
+  id         String   @id @default(cuid())
+  pageNumber Int
+  x          Float
+  y          Float
+  width      Float
+  height     Float
+  normalized Boolean  @default(false)
+  color      String
+  text       String   @default("Highlighted text")
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  File   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId String
+
+  @@index([fileId, pageNumber])
+}
