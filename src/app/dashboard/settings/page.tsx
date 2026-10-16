@@ -7,6 +7,7 @@ import {
   Bell, 
   Shield, 
   Sun,
+  Moon,
   Save,
   CheckCircle2,
   Upload as UploadIcon,
@@ -35,7 +36,6 @@ interface UserSettings {
   email?: string;
   imageUrl?: string;
   theme?: "light" | "dark" | "system";
-  accentColor?: string;
   fontSize?: number;
   autoSave?: boolean;
   defaultZoom?: number;
@@ -81,7 +81,7 @@ const SettingsPage = () => {
       
       // Apply changes immediately
       if (updatedUser.fontSize) applyFontSize(updatedUser.fontSize);
-      if (updatedUser.accentColor) applyAccentColor(updatedUser.accentColor);
+      if (updatedUser.theme) applyTheme(updatedUser.theme);
       
       toast({
         title: "✅ Settings saved!",
@@ -107,7 +107,6 @@ const SettingsPage = () => {
   const [settings, setSettings] = useState<UserSettings>({
     displayName: "",
     theme: "light",
-    accentColor: "blue",
     fontSize: 16,
     emailNotifications: true,
     processingAlerts: true,
@@ -126,7 +125,7 @@ const SettingsPage = () => {
       
       // Apply current settings
       if (dbSettings.fontSize) applyFontSize(dbSettings.fontSize);
-      if (dbSettings.accentColor) applyAccentColor(dbSettings.accentColor);
+      if (dbSettings.theme) applyTheme(dbSettings.theme as "light" | "dark" | "system");
     } else if (user && !isLoading) {
       // Set initial values from user
       setSettings(prev => ({
@@ -160,21 +159,20 @@ const SettingsPage = () => {
     
     
     if (key === "fontSize") applyFontSize(value);
-    else if (key === "accentColor") applyAccentColor(value);
+    else if (key === "theme") applyTheme(value);
   };
 
   // Updated resetToDefaults function 
   const resetToDefaults = () => {
     const defaults = { 
       theme: "light" as const, 
-      accentColor: "blue", 
       fontSize: 16 
     };
     setSettings(prev => ({ ...prev, ...defaults }));
     setHasChanges(true);
     
     applyFontSize(defaults.fontSize);
-    applyAccentColor(defaults.accentColor);
+    applyTheme(defaults.theme);
     
     toast({
       title: "🔄 Settings reset to defaults",
@@ -199,18 +197,13 @@ const SettingsPage = () => {
     localStorage.setItem('lexinote-font-size', fontSize.toString());
   };
 
-  const applyAccentColor = (color: string) => {
-    const colorMap: Record<string, string> = {
-      blue: "#3b82f6", 
-      purple: "#8b5cf6", 
-      green: "#10b981",
-      orange: "#f59e0b", 
-      red: "#ef4444", 
-      pink: "#ec4899"
-    };
-    const colorValue = colorMap[color] || "#3b82f6";
-    document.documentElement.style.setProperty('--color-primary', colorValue);
-    localStorage.setItem('lexinote-accent-color', color);
+  const applyTheme = (theme: "light" | "dark" | "system") => {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.classList.toggle(
+      "dark",
+      theme === "dark" || (theme === "system" && prefersDark)
+    );
+    localStorage.setItem("abitso-theme", theme);
   };
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -268,7 +261,7 @@ const SettingsPage = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `lexinote-data-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `abitso-data-${new Date().toISOString().split('T')[0]}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -291,21 +284,17 @@ const SettingsPage = () => {
 
   useEffect(() => {
     const savedFontSize = localStorage.getItem('lexinote-font-size');
-    const savedAccentColor = localStorage.getItem('lexinote-accent-color');
     
     if (savedFontSize) {
       applyFontSize(parseInt(savedFontSize));
-    }
-    if (savedAccentColor) {
-      applyAccentColor(savedAccentColor);
     }
   }, []);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-8 flex items-center justify-center">
+      <div className="min-h-screen bg-[#F8FAFA] p-8 flex items-center justify-center text-slate-900">
         <div className="flex items-center gap-3">
-          <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-teal-700 border-t-transparent rounded-full animate-spin" />
           <span>Loading settings...</span>
         </div>
       </div>
@@ -313,13 +302,13 @@ const SettingsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-8">
+    <div className="min-h-screen bg-[#F8FAFA] p-4 text-slate-900 sm:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
                 Settings
               </h1>
               <p className="text-gray-600 mt-2">Customize your experience and preferences</p>
@@ -330,10 +319,10 @@ const SettingsPage = () => {
                 onClick={handleSave}
                 disabled={isSaving || saveSuccess}
                 className={cn(
-                  "bg-gradient-to-r transition-all duration-200 shadow-lg",
+                  "rounded-[10px] transition-all duration-200 shadow-sm",
                   saveSuccess 
-                    ? "from-green-600 to-green-700" 
-                    : "from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700",
+                    ? "bg-teal-800 hover:bg-teal-800" 
+                    : "bg-teal-700 hover:bg-teal-800",
                   isSaving && "opacity-70 cursor-not-allowed"
                 )}
               >
@@ -358,10 +347,10 @@ const SettingsPage = () => {
           </div>
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex flex-col gap-5 lg:flex-row lg:gap-8">
           {/* Sidebar */}
-          <div className="w-72 space-y-2">
-            <Card className="p-2 bg-white/70 backdrop-blur-sm border-0 shadow-lg">
+          <div className="w-full space-y-2 lg:w-72">
+            <Card className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
               {settingsTabs.map((tab) => {
                 const isActive = activeTab === tab.id;
                 return (
@@ -371,17 +360,17 @@ const SettingsPage = () => {
                     className={cn(
                       "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-left",
                       isActive
-                        ? "bg-blue-100 text-blue-700 shadow-sm scale-[1.02]"
-                        : "hover:bg-gray-50 hover:scale-[1.01]"
+                        ? "bg-teal-50 text-teal-900 shadow-sm"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                     )}
                   >
                     <div className={cn(
                       "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
-                      isActive ? "bg-blue-200" : "bg-gray-100"
+                      isActive ? "bg-teal-100" : "bg-slate-100"
                     )}>
                       <tab.icon className={cn(
                         "w-4 h-4",
-                        isActive ? "text-blue-600" : "text-gray-600"
+                        isActive ? "text-teal-800" : "text-slate-600"
                       )} />
                     </div>
                     <span className="font-medium">{tab.label}</span>
@@ -490,10 +479,10 @@ const ProfileSettings = ({ settings, updateSetting, onImageUpload, isUploading, 
   };
 
   return (
-    <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
+    <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <User className="w-5 h-5 text-blue-600" />
+          <User className="w-5 h-5 text-teal-700" />
           Profile Information
         </CardTitle>
         <CardDescription>
@@ -508,7 +497,7 @@ const ProfileSettings = ({ settings, updateSetting, onImageUpload, isUploading, 
               id="displayName"
               value={settings.displayName || ""}
               onChange={(e) => updateSetting("displayName", e.target.value)}
-              className="bg-white/80"
+              className="bg-white"
               placeholder="Enter your display name"
             />
           </div>
@@ -518,7 +507,7 @@ const ProfileSettings = ({ settings, updateSetting, onImageUpload, isUploading, 
               id="email"
               type="email"
               value={user?.email || settings.email || ""}
-              className="bg-gray-100/80"
+              className="bg-slate-50"
               disabled
               placeholder="Email from authentication"
             />
@@ -542,7 +531,7 @@ const ProfileSettings = ({ settings, updateSetting, onImageUpload, isUploading, 
               onMouseLeave={() => setIsHovering(false)}
               onClick={() => document.getElementById('photo-upload')?.click()}
             >
-              <Avatar className="w-24 h-24 ring-2 ring-gray-200 transition-all duration-200 group-hover:ring-blue-300">
+              <Avatar className="w-24 h-24 ring-2 ring-slate-200 transition-all duration-200 group-hover:ring-teal-300">
                 {settings.imageUrl || user?.picture ? (
                   <AvatarImage 
                     src={settings.imageUrl || user?.picture} 
@@ -550,7 +539,7 @@ const ProfileSettings = ({ settings, updateSetting, onImageUpload, isUploading, 
                     className="object-cover"
                   />
                 ) : (
-                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white font-semibold text-2xl">
+                  <AvatarFallback className="bg-teal-700 text-white font-semibold text-2xl">
                     {getInitials(settings.displayName || user?.given_name + " " + user?.family_name || "User")}
                   </AvatarFallback>
                 )}
@@ -566,7 +555,7 @@ const ProfileSettings = ({ settings, updateSetting, onImageUpload, isUploading, 
               
               {/* Upload indicator */}
               {isUploading && (
-                <div className="absolute inset-0 bg-blue-500/50 rounded-full flex items-center justify-center">
+                <div className="absolute inset-0 bg-teal-700/50 rounded-full flex items-center justify-center">
                   <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 </div>
               )}
@@ -580,11 +569,11 @@ const ProfileSettings = ({ settings, updateSetting, onImageUpload, isUploading, 
                   size="sm"
                   disabled={isUploading}
                   onClick={() => document.getElementById('photo-upload')?.click()}
-                  className="bg-white/80 hover:bg-blue-50 border-blue-200"
+                  className="border-slate-200 bg-white hover:bg-teal-50 hover:text-teal-800"
                 >
                   {isUploading ? (
                     <>
-                      <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2" />
+                      <div className="w-3 h-3 border-2 border-teal-700 border-t-transparent rounded-full animate-spin mr-2" />
                       Uploading...
                     </>
                   ) : (
@@ -651,18 +640,18 @@ const ProfileSettings = ({ settings, updateSetting, onImageUpload, isUploading, 
 
 // Appearance Settings Component 
 const AppearanceSettings = ({ settings, updateSetting, onReset }: any) => (
-  <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
+  <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
     <CardHeader>
       <CardTitle className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Palette className="w-5 h-5 text-purple-600" />
+          <Palette className="w-5 h-5 text-teal-700" />
           Appearance & Theme
         </div>
         <Button
           onClick={onReset}
           variant="outline"
           size="sm"
-          className="text-gray-600 hover:text-gray-800 border-gray-300"
+          className="border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900"
         >
           <RefreshCw className="w-3 h-3 mr-2" />
           Reset to Defaults
@@ -673,77 +662,61 @@ const AppearanceSettings = ({ settings, updateSetting, onReset }: any) => (
       </CardDescription>
     </CardHeader>
     <CardContent className="space-y-6">
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label>Theme</Label>
-          <div className="grid grid-cols-1 gap-3">
-            <div className="flex items-center gap-3 p-4 rounded-xl border-2 border-blue-500 bg-blue-50 shadow-md">
-              <Sun className="w-6 h-6 text-blue-600" />
-              <div>
-                <span className="text-sm font-medium text-blue-900">Light Theme</span>
-                <p className="text-xs text-blue-700">Clean and bright interface</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <Separator />
-
-        <div className="space-y-2">
-          <Label>Accent Color</Label>
-          <div className="grid grid-cols-6 gap-3">
-            {[
-              { value: "blue", color: "bg-blue-500", name: "Blue" },
-              { value: "purple", color: "bg-purple-500", name: "Purple" },
-              { value: "green", color: "bg-green-500", name: "Green" },
-              { value: "orange", color: "bg-orange-500", name: "Orange" },
-              { value: "red", color: "bg-red-500", name: "Red" },
-              { value: "pink", color: "bg-pink-500", name: "Pink" },
-            ].map((color) => (
+      <div className="space-y-3">
+        <Label>Theme</Label>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {[
+            { value: "light", label: "Light", description: "Clean and bright", Icon: Sun },
+            { value: "dark", label: "Dark", description: "Easy on the eyes", Icon: Moon },
+            { value: "system", label: "System", description: "Follow device setting", Icon: Palette },
+          ].map(({ value, label, description, Icon }) => {
+            const isSelected = (settings.theme || "light") === value;
+            return (
               <button
-                key={color.value}
-                onClick={() => updateSetting("accentColor", color.value)}
+                key={value}
+                type="button"
+                onClick={() => updateSetting("theme", value)}
+                aria-pressed={isSelected}
                 className={cn(
-                  "w-12 h-12 rounded-full border-4 transition-all duration-200 relative group",
-                  color.color,
-                  settings.accentColor === color.value
-                    ? "border-gray-800 scale-110 shadow-lg"
-                    : "border-gray-200 hover:scale-105"
+                  "flex items-center gap-3 rounded-xl border p-4 text-left transition-colors",
+                  isSelected
+                    ? "border-teal-700 bg-teal-50 text-teal-900 ring-1 ring-teal-700"
+                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                 )}
-                title={color.name}
               >
-                {settings.accentColor === color.value && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <CheckCircle2 className="w-4 h-4 text-white" />
-                  </div>
-                )}
+                <Icon className={cn("h-5 w-5 shrink-0", isSelected ? "text-teal-700" : "text-slate-500")} />
+                <span>
+                  <span className="block text-sm font-semibold">{label}</span>
+                  <span className="mt-0.5 block text-xs text-slate-500">{description}</span>
+                </span>
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
+        <p className="text-sm text-slate-500">Your theme preference applies throughout Abitso.</p>
+      </div>
 
-        <Separator />
+      <Separator />
 
-        <div className="space-y-3">
-          <Label>Font Size: {settings.fontSize || 16}px</Label>
-          <Slider
-            value={[settings.fontSize || 16]}
-            onValueChange={(value) => updateSetting("fontSize", value[0])}
-            min={12}
-            max={24}
-            step={1}
-            className="w-full"
-          />
-          <div className="flex justify-between text-xs text-gray-500">
-            <span>12px (Small)</span>
-            <span>16px (Default)</span>
-            <span>24px (Large)</span>
-          </div>
-          <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-sm text-blue-700">
-              💡 <strong>Font size affects:</strong> Dashboard, settings, and all text throughout the application.
-            </p>
-          </div>
+      <div className="space-y-3">
+        <Label>Font Size: {settings.fontSize || 16}px</Label>
+        <Slider
+          value={[settings.fontSize || 16]}
+          onValueChange={(value) => updateSetting("fontSize", value[0])}
+          min={12}
+          max={24}
+          step={1}
+          className="w-full"
+        />
+        <div className="flex justify-between text-xs text-slate-500">
+          <span>12px (Small)</span>
+          <span>16px (Default)</span>
+          <span>24px (Large)</span>
+        </div>
+        <div className="rounded-xl border border-teal-100 bg-teal-50 p-3">
+          <p className="text-sm text-teal-900">
+            <strong>Font size:</strong> Adjusts text throughout the dashboard and settings.
+          </p>
         </div>
       </div>
     </CardContent>
@@ -752,10 +725,10 @@ const AppearanceSettings = ({ settings, updateSetting, onReset }: any) => (
 
 // Notification Settings Component
 const NotificationSettings = ({ settings, updateSetting }: any) => (
-  <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
+  <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
     <CardHeader>
       <CardTitle className="flex items-center gap-2">
-        <Bell className="w-5 h-5 text-orange-600" />
+        <Bell className="w-5 h-5 text-teal-700" />
         Notifications
       </CardTitle>
       <CardDescription>
@@ -804,10 +777,10 @@ const NotificationSettings = ({ settings, updateSetting }: any) => (
 
 // Privacy Settings Component
 const PrivacySettings = ({ settings, updateSetting, onExportData }: any) => (
-  <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
+  <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
     <CardHeader>
       <CardTitle className="flex items-center gap-2">
-        <Shield className="w-5 h-5 text-green-600" />
+        <Shield className="w-5 h-5 text-teal-700" />
         Privacy & Security
       </CardTitle>
       <CardDescription>
@@ -818,14 +791,14 @@ const PrivacySettings = ({ settings, updateSetting, onExportData }: any) => (
       {/* Data Export */}
       <div className="space-y-4">
         <Label className="text-lg font-medium">Data Export</Label>
-        <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <div className="flex items-center justify-between p-4 rounded-xl border border-teal-100 bg-teal-50">
           <div>
-            <h4 className="font-semibold text-blue-900">Export Your Data</h4>
-            <p className="text-blue-700 text-sm">Download all your documents and settings</p>
+            <h4 className="font-semibold text-teal-900">Export Your Data</h4>
+            <p className="text-teal-800 text-sm">Download all your documents and settings</p>
           </div>
           <Button
             onClick={onExportData}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-teal-700 hover:bg-teal-800"
           >
             <Download className="w-4 h-4 mr-2" />
             Export Data

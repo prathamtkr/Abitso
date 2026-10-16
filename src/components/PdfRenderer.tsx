@@ -9,8 +9,6 @@ import {
   ZoomOut,
   Moon,
   Sun,
-  Bookmark,
-  BookmarkCheck,
   Download,
   Share2,
   X,
@@ -50,7 +48,6 @@ import {
   DropdownMenuSeparator,
 } from "./ui/dropdown-menu";
 import { Progress } from "./ui/progress";
-import { Badge } from "./ui/badge";
 import { Switch } from "./ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
@@ -78,13 +75,6 @@ interface Highlight {
   text: string;
   timestamp: number;
   note: string | null;
-}
-
-interface Bookmark {
-  id: string;
-  page: number;
-  title: string;
-  timestamp: number;
 }
 
 const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
@@ -216,7 +206,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
 
   // Highlighting functionality
   const [isHighlightMode, setIsHighlightMode] = useState<boolean>(false);
-  const [currentHighlightColor, setCurrentHighlightColor] = useState<string>("#ffeb3b");
+  const [currentHighlightColor, setCurrentHighlightColor] = useState<string>("#CCFBF1");
   const [selectedHighlight, setSelectedHighlight] = useState<string | null>(null);
   const [isSelecting, setIsSelecting] = useState<boolean>(false);
   const [selectionStart, setSelectionStart] = useState<{ x: number; y: number } | null>(null);
@@ -224,8 +214,6 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
 
   // Theme and UI state
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
-  const [showBookmarks, setShowBookmarks] = useState<boolean>(false);
   const [showHighlights, setShowHighlights] = useState<boolean>(false);
   const [readingProgress, setReadingProgress] = useState<number>(0);
 
@@ -253,6 +241,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
 
   // Highlight colors
   const highlightColors = [
+    { name: "Teal", value: "#CCFBF1", bg: "bg-teal-100" },
     { name: "Yellow", value: "#ffeb3b", bg: "bg-yellow-300" },
     { name: "Green", value: "#4caf50", bg: "bg-green-300" },
     { name: "Blue", value: "#2196f3", bg: "bg-blue-300" },
@@ -295,20 +284,10 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('pdf-theme');
-      const savedBookmarks = localStorage.getItem(`pdf-bookmarks-${url}`);
       
       if (savedTheme === 'dark') {
         setIsDarkMode(true);
       }
-      
-      if (savedBookmarks) {
-        try {
-          setBookmarks(JSON.parse(savedBookmarks));
-        } catch (error) {
-          console.error('Error parsing bookmarks:', error);
-        }
-      }
-
     }
   }, [url]);
 
@@ -378,13 +357,6 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
       localStorage.setItem('pdf-theme', isDarkMode ? 'dark' : 'light');
     }
   }, [isDarkMode]);
-
-  // Save bookmarks
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(`pdf-bookmarks-${url}`, JSON.stringify(bookmarks));
-    }
-  }, [bookmarks, url]);
 
   // Update reading progress
   useEffect(() => {
@@ -541,37 +513,6 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
     setShowHighlights(false);
   };
 
-  // Bookmark functionality
-  const toggleBookmark = () => {
-    const existingBookmark = bookmarks.find(b => b.page === currentPage);
-    
-    if (existingBookmark) {
-      setBookmarks(prev => prev.filter(b => b.id !== existingBookmark.id));
-      toast({
-        title: "Bookmark Removed",
-        description: `Page ${currentPage} bookmark removed`,
-      });
-    } else {
-      const newBookmark: Bookmark = {
-        id: `bookmark-${Date.now()}`,
-        page: currentPage,
-        title: `Page ${currentPage}`,
-        timestamp: Date.now(),
-      };
-      setBookmarks(prev => [...prev, newBookmark]);
-      toast({
-        title: "Bookmark Added",
-        description: `Page ${currentPage} bookmarked`,
-      });
-    }
-  };
-
-  const navigateToBookmark = (page: number) => {
-    setCurrentPage(page);
-    setValue("page", String(page));
-    setShowBookmarks(false);
-  };
-
   // Download functionality
   const handleDownload = async () => {
     try {
@@ -623,7 +564,6 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
     }
   };
 
-  const isBookmarked = bookmarks.some(b => b.page === currentPage);
   const currentPageHighlights = highlights.filter(h => h.pageNumber === currentPage);
 
   return (
@@ -643,8 +583,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
               isDarkMode ? "bg-gray-800" : "bg-gray-100"
             )} 
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-80" 
-               style={{ width: `${readingProgress}%` }} />
+          <div className="absolute inset-0 bg-teal-700" style={{ width: `${readingProgress}%` }} />
         </div>
 
         {/* Header */}
@@ -652,7 +591,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
           "h-12 sm:h-16 w-full border-b flex items-center justify-between px-2 sm:px-4 rounded-t-md sm:rounded-t-2xl",
           isDarkMode 
             ? "bg-gray-800/90 border-gray-700" 
-            : "bg-gradient-to-r from-blue-50/70 via-white/80 to-fuchsia-50/70 border-zinc-200"
+            : "bg-[#F8FAFA] border-zinc-200"
         )}>
           {/* Left Controls */}
           <div className="flex items-center gap-1 sm:gap-2">
@@ -664,7 +603,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
               }}
               variant="ghost"
               size="sm"
-              className="p-1.5 sm:p-2 hover:bg-blue-100 active:scale-95 transition-all duration-200"
+              className="p-1.5 sm:p-2 hover:bg-teal-50 active:scale-95 transition-all duration-200"
               aria-label="previous page"
             >
               <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -674,7 +613,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
               <Input
                 {...register("page")}
                 className={cn(
-                  "w-8 sm:w-12 h-6 sm:h-8 text-xs sm:text-sm text-center font-semibold rounded-md border focus:ring-2 focus:ring-blue-400 transition-all duration-200",
+                  "w-8 sm:w-12 h-6 sm:h-8 text-xs sm:text-sm text-center font-semibold rounded-[10px] border focus:ring-2 focus:ring-teal-700 transition-all duration-200",
                   isDarkMode 
                     ? "bg-gray-700 border-gray-600 text-white" 
                     : "bg-white border-zinc-200",
@@ -701,35 +640,11 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
               }}
               variant="ghost"
               size="sm"
-              className="p-1.5 sm:p-2 hover:bg-blue-100 active:scale-95 transition-all duration-200"
+              className="p-1.5 sm:p-2 hover:bg-teal-50 active:scale-95 transition-all duration-200"
               aria-label="next page"
             >
               <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
-          </div>
-
-          {/* Center - Desktop Only Page Info */}
-          <div className="hidden md:flex items-center gap-4">
-            {isHighlightMode && (
-              <Badge variant="outline" className="animate-pulse bg-yellow-100 text-yellow-800 border-yellow-300">
-                <Highlighter className="h-3 w-3 mr-1" />
-                Highlight Mode Active
-              </Badge>
-            )}
-            
-            {currentPageHighlights.length > 0 && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Highlighter className="h-3 w-3" />
-                {currentPageHighlights.length} highlights
-              </Badge>
-            )}
-            
-            {isBookmarked && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <BookmarkCheck className="h-3 w-3" />
-                Bookmarked
-              </Badge>
-            )}
           </div>
 
           {/* Right Controls */}
@@ -783,11 +698,12 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                   variant="ghost"
                   size="sm"
                   aria-label="show highlights and notes"
+                  className={cn(
+                    "rounded-full transition-colors",
+                    showHighlights && "bg-teal-50 text-teal-800 ring-1 ring-teal-700"
+                  )}
                 >
                   <StickyNote className="h-3 w-3" />
-                  <Badge variant="secondary" className="ml-1 text-xs">
-                    {highlights.length}
-                  </Badge>
                 </Button>
               )}
             </div>
@@ -802,8 +718,8 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                     variant="ghost"
                     size="sm"
                     className={cn(
-                      "transition-all duration-200",
-                      isHighlightMode && "bg-yellow-100 text-yellow-600"
+                      "rounded-full transition-colors",
+                      isHighlightMode && "bg-teal-50 text-teal-800 ring-1 ring-teal-700"
                     )}
                   >
                     <Highlighter className="h-4 w-4" />
@@ -818,7 +734,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="transition-all duration-200"
+                    className="rounded-full transition-all duration-200"
                   >
                     <Palette className="h-4 w-4" />
                   </Button>
@@ -834,7 +750,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                           className={cn(
                             "w-8 h-8 rounded-lg border-2 transition-all duration-200 hover:scale-110",
                             currentHighlightColor === color.value 
-                              ? "ring-2 ring-blue-500 scale-110" 
+                              ? "ring-2 ring-teal-700 scale-110" 
                               : "hover:ring-1 hover:ring-gray-300"
                           )}
                           style={{ backgroundColor: color.value }}
@@ -855,64 +771,14 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                       variant="ghost"
                       size="sm"
                       className={cn(
-                        "transition-all duration-200",
-                        showHighlights && "bg-blue-100 text-blue-600"
+                        "rounded-full transition-all duration-200",
+                        showHighlights && "bg-teal-50 text-teal-800 ring-1 ring-teal-700"
                       )}
                     >
                       <Eye className="h-4 w-4" />
-                      <Badge variant="secondary" className="ml-1 text-xs">
-                        {highlights.length}
-                      </Badge>
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Show all highlights</TooltipContent>
-                </Tooltip>
-              )}
-
-              {/* Bookmark Toggle */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={toggleBookmark}
-                    variant="ghost"
-                    size="sm"
-                    className={cn(
-                      "transition-all duration-200",
-                      isBookmarked && "bg-yellow-100 text-yellow-600"
-                    )}
-                  >
-                    {isBookmarked ? (
-                      <BookmarkCheck className="h-4 w-4" />
-                    ) : (
-                      <Bookmark className="h-4 w-4" />
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {isBookmarked ? "Remove bookmark" : "Add bookmark"}
-                </TooltipContent>
-              </Tooltip>
-
-              {/* Bookmarks Panel Toggle */}
-              {bookmarks.length > 0 && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      onClick={() => setShowBookmarks(!showBookmarks)}
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        "transition-all duration-200",
-                        showBookmarks && "bg-blue-100 text-blue-600"
-                      )}
-                    >
-                      <Menu className="h-4 w-4" />
-                      <Badge variant="secondary" className="ml-1 text-xs">
-                        {bookmarks.length}
-                      </Badge>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Show bookmarks</TooltipContent>
                 </Tooltip>
               )}
 
@@ -920,7 +786,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    className="gap-1.5 hover:bg-blue-100 active:scale-95 transition-all duration-200"
+                    className="gap-1.5 rounded-[10px] hover:bg-teal-50 active:scale-95 transition-all duration-200"
                     variant="ghost"
                     size="sm"
                   >
@@ -1026,7 +892,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
           )}>
             <div className="flex items-center justify-between mb-2 sm:mb-3">
               <h3 className={cn("text-sm sm:text-base font-semibold", isDarkMode ? "text-white" : "text-gray-900")}>
-                All Highlights ({highlights.length})
+                All Highlights
               </h3>
               <Button
                 size="sm"
@@ -1044,7 +910,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                   className={cn(
                     "p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-200 hover:scale-[1.02]",
                     selectedHighlight === highlight.id 
-                      ? "border-blue-300 bg-blue-50" 
+                      ? "border-teal-300 bg-teal-50" 
                       : isDarkMode 
                         ? "border-gray-600 bg-gray-700 hover:bg-gray-600" 
                         : "border-gray-200 bg-white hover:bg-gray-50"
@@ -1096,7 +962,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                         size="sm"
                         className={cn(
                           "h-6 w-6 p-0",
-                          highlight.note ? "text-indigo-600" : "text-gray-500"
+                          highlight.note ? "text-teal-800" : "text-gray-500"
                         )}
                         title={highlight.note ? "Edit note" : "Add note"}
                         aria-label={highlight.note ? "Edit note" : "Add note"}
@@ -1160,45 +1026,6 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
           </div>
         )}
 
-        {/* Desktop: Bookmarks Panel */}
-        {showBookmarks && bookmarks.length > 0 && (
-          <div className={cn(
-            "border-b p-2 sm:p-4 animate-in slide-in-from-top-2 duration-200 hidden md:block",
-            isDarkMode ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"
-          )}>
-            <div className="flex items-center justify-between mb-2 sm:mb-3">
-              <h3 className={cn("text-sm sm:text-base font-semibold", isDarkMode ? "text-white" : "text-gray-900")}>
-                Bookmarks
-              </h3>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setShowBookmarks(false)}
-                className="p-1 sm:p-2"
-              >
-                <X className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-1 sm:gap-2">
-              {bookmarks.map((bookmark) => (
-                <Button
-                  key={bookmark.id}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigateToBookmark(bookmark.page)}
-                  className={cn(
-                    "justify-start transition-all duration-200 hover:scale-105 text-xs sm:text-sm h-7 sm:h-8",
-                    currentPage === bookmark.page && "bg-blue-100 border-blue-300"
-                  )}
-                >
-                  <Bookmark className="mr-1 h-2 w-2 sm:h-3 sm:w-3" />
-                  Page {bookmark.page}
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* PDF Viewer */}
         <div className="flex-1 max-h-screen overflow-auto">
           {/* Desktop: Scrollable PDF with SimpleBar */}
@@ -1215,8 +1042,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                   loading={
                     <div className="flex flex-col items-center justify-center py-24">
                       <div className="relative">
-                        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                        <div className="absolute inset-0 h-8 w-8 bg-blue-400 rounded-full blur-lg opacity-30 animate-pulse" />
+                        <Loader2 className="h-8 w-8 animate-spin text-teal-700" />
                       </div>
                       <p className={cn(
                         "mt-4 font-medium animate-pulse",
@@ -1272,8 +1098,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                       loading={
                         <div className="flex flex-col items-center justify-center py-24">
                           <div className="relative">
-                            <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
-                            <div className="absolute inset-0 h-8 w-8 bg-purple-400 rounded-full blur-lg opacity-30 animate-pulse" />
+                            <Loader2 className="h-8 w-8 animate-spin text-teal-700" />
                           </div>
                           <p className={cn(
                             "mt-4 font-medium animate-pulse",
@@ -1291,7 +1116,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                     {/* Selection Preview */}
                     {isSelecting && selectionStart && selectionEnd && (
                       <div
-                        className="absolute border-2 border-dashed border-blue-500 rounded pointer-events-none"
+                        className="absolute border-2 border-dashed border-teal-700 rounded pointer-events-none"
                         style={{
                           left: Math.min(selectionStart.x, selectionEnd.x),
                           top: Math.min(selectionStart.y, selectionEnd.y),
@@ -1310,7 +1135,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                         className={cn(
                           "absolute border rounded cursor-pointer transition-all duration-200 hover:scale-105",
                           selectedHighlight === highlight.id 
-                            ? "border-2 border-blue-500 shadow-lg" 
+                            ? "border-2 border-teal-700 shadow-sm" 
                             : "border border-transparent hover:border-gray-300"
                         )}
                         style={{
@@ -1346,8 +1171,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                   loading={
                     <div className="flex flex-col items-center justify-center py-12">
                       <div className="relative">
-                        <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
-                        <div className="absolute inset-0 h-6 w-6 bg-blue-400 rounded-full blur-lg opacity-30 animate-pulse" />
+                        <Loader2 className="h-6 w-6 animate-spin text-teal-700" />
                       </div>
                       <p className={cn(
                         "mt-2 text-sm font-medium animate-pulse",
@@ -1403,8 +1227,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                       loading={
                         <div className="flex flex-col items-center justify-center py-12">
                           <div className="relative">
-                            <Loader2 className="h-6 w-6 animate-spin text-purple-500" />
-                            <div className="absolute inset-0 h-6 w-6 bg-purple-400 rounded-full blur-lg opacity-30 animate-pulse" />
+                            <Loader2 className="h-6 w-6 animate-spin text-teal-700" />
                           </div>
                           <p className={cn(
                             "mt-2 text-sm font-medium animate-pulse",
@@ -1422,7 +1245,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                     {/* Selection Preview */}
                     {isSelecting && selectionStart && selectionEnd && (
                       <div
-                        className="absolute border-2 border-dashed border-blue-500 rounded pointer-events-none"
+                        className="absolute border-2 border-dashed border-teal-700 rounded pointer-events-none"
                         style={{
                           left: Math.min(selectionStart.x, selectionEnd.x),
                           top: Math.min(selectionStart.y, selectionEnd.y),
@@ -1441,7 +1264,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                         className={cn(
                           "absolute border rounded cursor-pointer transition-all duration-200 hover:scale-105",
                           selectedHighlight === highlight.id 
-                            ? "border-2 border-blue-500 shadow-lg" 
+                            ? "border-2 border-teal-700 shadow-sm" 
                             : "border border-transparent hover:border-gray-300"
                         )}
                         style={{
@@ -1465,17 +1288,21 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
           </div>
 
           {/* Floating Highlight Button - Mobile Only */}
-          {!isHighlightMode && (
-            <div className="absolute bottom-2 right-2 md:hidden">
-              <Button
-                size="sm"
-                onClick={() => setIsHighlightMode(true)}
-                className="rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-yellow-500 hover:bg-yellow-600 h-8 w-8 p-0"
-              >
-                <Highlighter className="h-3 w-3" />
-              </Button>
-            </div>
-          )}
+          <div className="absolute bottom-2 right-2 md:hidden">
+            <Button
+              size="sm"
+              onClick={() => setIsHighlightMode((active) => !active)}
+              aria-label={isHighlightMode ? "Turn off highlight mode" : "Turn on highlight mode"}
+              className={cn(
+                "rounded-full transition-colors h-8 w-8 p-0",
+                isHighlightMode
+                  ? "bg-teal-50 text-teal-800 ring-1 ring-teal-700"
+                  : "bg-teal-700 text-white hover:bg-teal-800"
+              )}
+            >
+              <Highlighter className="h-3 w-3" />
+            </Button>
+          </div>
         </div>
 
         {/* Bottom Status Bar */}
@@ -1492,21 +1319,6 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
           </div>
           
           <div className="flex items-center gap-2 sm:gap-4">
-            {highlights.length > 0 && (
-              <span className="text-yellow-600 font-medium text-xs">
-                <span className="hidden sm:inline">{highlights.length} highlights • {currentPageHighlights.length} on this page</span>
-                <span className="sm:hidden">{highlights.length}H</span>
-              </span>
-            )}
-            {bookmarks.length > 0 && (
-              <span className="hidden sm:inline">{bookmarks.length} bookmarks</span>
-            )}
-            {isHighlightMode && (
-              <span className="text-yellow-600 font-medium text-xs">
-                <span className="hidden sm:inline">Highlight Mode Active</span>
-                <span className="sm:hidden">Highlight On</span>
-              </span>
-            )}
             <span className="flex items-center gap-1">
               {isDarkMode ? <Moon className="h-2 w-2 sm:h-3 sm:w-3" /> : <Sun className="h-2 w-2 sm:h-3 sm:w-3" />}
               <span className="hidden sm:inline">{isDarkMode ? "Dark" : "Light"}</span>

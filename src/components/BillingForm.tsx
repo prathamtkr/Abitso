@@ -61,7 +61,7 @@ const BillingForm = ({ subscriptionPlan }: BillingFormProps) => {
           className="w-full flex justify-center"
           onSubmit={(e) => {
             e.preventDefault();
-            createStripeSession();
+            createStripeSession({ interval: "month" });
           }}
         >
           <Card className="w-full max-w-2xl shadow-2xl border border-blue-100 animate-fade-in-up bg-white/90 backdrop-blur-md transition-transform duration-300 hover:scale-[1.015] hover:shadow-3xl">

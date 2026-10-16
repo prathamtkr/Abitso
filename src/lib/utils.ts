@@ -16,10 +16,10 @@ export function absoluteUrl(path: string) {
 }
 
 export function constructMetadata({
-  title = "Lexinote – Chat with your PDFs",
-  description = "Unlock the power of your PDFs with AI chat. Meet Lexinote, your smart, instant study buddy.",
+  title = "Abitso – Chat with your PDFs",
+  description = "Turn your PDFs into interactive conversations. Ask questions, find insights, and see where answers come from.",
   image = "/thumbnail.png",
-  icons = "/favicon.ico",
+  icons = "/icon.svg",
   noIndex = false
 }: {
   title?: string

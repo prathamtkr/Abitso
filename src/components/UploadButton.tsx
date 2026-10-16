@@ -150,12 +150,9 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
         <div
           {...getRootProps()}
           className={cn(
-            "relative group h-72 rounded-3xl border-2 border-dashed transition-all duration-500 cursor-pointer overflow-hidden",
-            "bg-gradient-to-br from-slate-50 to-blue-50",
-            isHovering 
-              ? "border-blue-500 bg-gradient-to-br from-blue-50 to-indigo-100 scale-[1.02] shadow-xl" 
-              : "border-slate-300 hover:border-blue-400 hover:shadow-lg",
-            showClickAnimation && "animate-pulse border-blue-500 bg-gradient-to-br from-blue-100 to-indigo-200"
+            "relative group h-72 rounded-2xl border border-dashed transition-colors duration-300 cursor-pointer overflow-hidden bg-[#F8FAFA]",
+            isHovering ? "border-teal-700 bg-teal-50" : "border-slate-300 hover:border-teal-700",
+            showClickAnimation && "border-teal-700 bg-teal-50"
           )}
         >
          
@@ -164,7 +161,7 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
               <div
                 key={i}
                 className={cn(
-                  "absolute w-1 h-1 bg-blue-400 rounded-full opacity-30 transition-all duration-300",
+                  "absolute w-1 h-1 bg-teal-600 rounded-full opacity-20 transition-all duration-300",
                   "animate-float",
                   showClickAnimation && "opacity-100 scale-150"
                 )}
@@ -181,8 +178,8 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
           {/* Click ripple effect */}
           {showClickAnimation && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 border-4 border-blue-400 rounded-full animate-ping opacity-75"></div>
-              <div className="absolute w-16 h-16 border-2 border-blue-500 rounded-full animate-ping animation-delay-200 opacity-50"></div>
+              <div className="w-20 h-20 border border-teal-600 rounded-full animate-ping opacity-40"></div>
+              <div className="absolute w-12 h-12 border border-teal-700 rounded-full animate-ping animation-delay-200 opacity-30"></div>
             </div>
           )}
 
@@ -193,7 +190,7 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
                 <Sparkles
                   key={i}
                   className={cn(
-                    "absolute w-4 h-4 text-blue-500 animate-bounce opacity-0",
+                    "absolute w-4 h-4 text-teal-700 animate-bounce opacity-0",
                     showClickAnimation && "opacity-100"
                   )}
                   style={{
@@ -212,9 +209,9 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
               <div className="text-center space-y-6">
                 {/* Main cloud icon */}
                 <div className={cn(
-                  "mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center",
-                  "shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3",
-                  showClickAnimation && "scale-125 rotate-12 shadow-2xl"
+                  "mx-auto w-16 h-16 rounded-xl bg-teal-700 flex items-center justify-center",
+                  "transition-transform duration-300 group-hover:scale-105",
+                  showClickAnimation && "scale-105"
                 )}>
                   <CloudIcon className="w-8 h-8 text-white" />
                   
@@ -224,14 +221,14 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
                     "group-hover:scale-110 group-hover:-translate-y-1",
                     showClickAnimation && "scale-150 -translate-y-2 rotate-45"
                   )}>
-                    <Upload className="w-3 h-3 text-blue-600" />
+                    <Upload className="w-3 h-3 text-teal-700" />
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <h3 className={cn(
                     "text-xl font-semibold text-slate-800 transition-all duration-300",
-                    showClickAnimation && "scale-105 text-blue-700"
+                    showClickAnimation && "scale-105 text-teal-800"
                   )}>
                     Drop your PDF here
                   </h3>
@@ -241,9 +238,9 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
                       type="button"
                       onClick={(e) => handleBrowseClick(e, open)}
                       className={cn(
-                        "text-blue-600 font-medium hover:underline focus:outline-none transition-all duration-300",
-                        "hover:text-blue-700 hover:scale-105",
-                        showClickAnimation && "text-blue-700 scale-110 font-bold"
+                        "text-teal-800 font-medium hover:underline focus:outline-none transition-colors duration-300",
+                        "hover:text-teal-900",
+                        showClickAnimation && "text-teal-900 font-bold"
                       )}
                     >
                       click to browse
@@ -259,9 +256,9 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
             {/* File preview */}
             {acceptedFiles && acceptedFiles.length > 0 && !isUploading && (
               <div className="animate-in slide-in-from-bottom-4 duration-300">
-                <div className="flex items-center gap-4 bg-white/80 rounded-2xl p-4 border border-blue-200 backdrop-blur-sm">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <FileIcon className="w-6 h-6 text-blue-600" />
+                <div className="flex items-center gap-4 bg-white rounded-xl p-4 border border-slate-200">
+                  <div className="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center">
+                    <FileIcon className="w-6 h-6 text-teal-800" />
                   </div>
                   <div>
                     <p className="font-medium text-slate-800 truncate max-w-[200px]">
@@ -278,11 +275,11 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
             {/* Upload progress */}
             {isUploading && !uploadComplete && (
               <div className="text-center space-y-4 animate-in fade-in-0 duration-300">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center relative">
+                <div className="w-16 h-16 mx-auto bg-teal-700 rounded-xl flex items-center justify-center relative">
                   <Loader2Icon className="w-8 h-8 text-white animate-spin" />
                   
                   {/* Pulsing ring */}
-                  <div className="absolute inset-0 border-4 border-blue-300 rounded-2xl animate-ping opacity-75"></div>
+                  <div className="absolute inset-0 border border-teal-300 rounded-xl animate-ping opacity-60"></div>
                 </div>
                 <div className="space-y-3">
                   <p className="text-lg font-semibold text-slate-800">Uploading...</p>

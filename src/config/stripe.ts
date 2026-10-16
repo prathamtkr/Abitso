@@ -10,6 +10,11 @@ export const PLANS = [
         test: '',
         production: '',
       },
+      yearlyPriceIds: {
+        test: '',
+        production: '',
+      },
+      legacyPriceIds: [],
     },
   },
   {
@@ -18,11 +23,17 @@ export const PLANS = [
     quota: 70,
     pagesPerPdf: 35,
     price: {
-      amount: 199,
-      priceIds: {
-        test: 'price_1RfOnd2ferafg422IS053HhW',
-        production: '',
-      },
+    amount: 5,
+    yearlyAmount: 45,
+    priceIds: {
+      test: process.env.STRIPE_PRO_MONTHLY_PRICE_ID ?? '',
+      production: process.env.STRIPE_PRO_MONTHLY_PRICE_ID_PRODUCTION ?? '',
+    },
+    yearlyPriceIds: {
+      test: process.env.STRIPE_PRO_YEARLY_PRICE_ID ?? '',
+      production: process.env.STRIPE_PRO_YEARLY_PRICE_ID_PRODUCTION ?? '',
+    },
+    legacyPriceIds: ['price_1RfOnd2ferafg422IS053HhW'],
     },
   },
 ]

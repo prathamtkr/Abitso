@@ -8,6 +8,8 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
   typescript: true,
 })
 
+const stripePriceMode = process.env.NODE_ENV === 'production' ? 'production' : 'test'
+
 export async function getUserSubscriptionPlan() {
   const { getUser } = getKindeServerSession()
   const user = await getUser()
@@ -42,9 +44,16 @@ export async function getUserSubscriptionPlan() {
     dbUser.stripeCurrentPeriodEnd.getTime() + 86_400_000 > Date.now()
   )
 
+  const proPlan = PLANS.find((plan) => plan.name === 'Pro')!
   const plan = isSubscribed
-    ? PLANS.find((plan) => plan.price.priceIds.test === dbUser.stripePriceId)
-    : null
+    ? PLANS.find((plan) =>
+        [
+          plan.price.priceIds[stripePriceMode],
+          plan.price.yearlyPriceIds[stripePriceMode],
+          ...plan.price.legacyPriceIds,
+        ].includes(dbUser.stripePriceId!)
+      ) ?? proPlan
+    : PLANS[0]
 
   let isCanceled = false
   if (isSubscribed && dbUser.stripeSubscriptionId) {

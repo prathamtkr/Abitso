@@ -4,57 +4,156 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 180 20% 98%;
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 176 77% 26%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 180 20% 97%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 180 20% 97%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 166 76% 97%;
+    --accent-foreground: 176 77% 26%;
     --destructive: 0 86% 97%;
     --destructive-foreground: 0 74% 42%;
-    --border: 220 14% 96%; /* Example value */
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 176 77% 26%;
+    --radius: 10px;
     --font-size-base: 16px;
     --font-size-sm: 14px;
     --font-size-lg: 18px;
-    --color-primary: #3b82f6;
-    --color-primary-dark: #1e40af;
-    --color-accent: #8b5cf6;
-    --theme-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --color-primary: #0f766e;
+    --color-primary-dark: #115e59;
+    --color-accent: #0d9488;
+    --theme-gradient: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222 40% 8%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 222 35% 12%;
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
+    --popover: 222 35% 12%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
+    --primary: 176 77% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 28% 18%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 217 28% 18%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 217 28% 18%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --border: 217 24% 24%;
+    --input: 217 24% 24%;
+    --ring: 176 77% 38%;
+    --color-primary: #2dd4bf;
+    --color-primary-dark: #0f766e;
+    --color-accent: #2dd4bf;
+    --theme-gradient: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
   }
 }
+
+  @layer base {
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-weight: 500;
+    }
+
+    html.dark body {
+      color-scheme: dark;
+    }
+
+    html.dark [class~="bg-white"],
+    html.dark [class~="bg-white/70"],
+    html.dark [class~="bg-white/80"],
+    html.dark [class~="bg-white/90"] {
+      background-color: hsl(var(--card)) !important;
+    }
+
+    html.dark [class~="bg-[#F8FAFA]"],
+    html.dark [class~="bg-gray-50"],
+    html.dark [class~="bg-slate-50"] {
+      background-color: hsl(var(--background)) !important;
+    }
+
+    html.dark [class~="bg-gray-100"],
+    html.dark [class~="bg-slate-100"],
+    html.dark [class~="bg-gray-100/80"] {
+      background-color: hsl(var(--secondary)) !important;
+    }
+
+    html.dark [class~="bg-blue-50"],
+    html.dark [class~="bg-indigo-50"],
+    html.dark [class~="bg-fuchsia-50"],
+    html.dark [class~="bg-purple-50"],
+    html.dark [class~="bg-teal-50"],
+    html.dark [class~="bg-green-50"],
+    html.dark [class~="bg-yellow-50"],
+    html.dark [class~="bg-orange-50"] {
+      background-color: hsl(var(--secondary)) !important;
+    }
+
+    html.dark [class*="bg-gradient-to-"] {
+      background-image: none !important;
+      background-color: hsl(var(--background)) !important;
+    }
+
+    html.dark [class~="text-slate-900"],
+    html.dark [class~="text-slate-800"],
+    html.dark [class~="text-gray-900"],
+    html.dark [class~="text-gray-800"] {
+      color: hsl(var(--foreground)) !important;
+    }
+
+    html.dark [class~="text-slate-700"],
+    html.dark [class~="text-slate-600"],
+    html.dark [class~="text-gray-700"],
+    html.dark [class~="text-gray-600"],
+    html.dark [class~="text-gray-500"] {
+      color: hsl(var(--muted-foreground)) !important;
+    }
+
+    html.dark [class~="text-blue-600"],
+    html.dark [class~="text-blue-700"],
+    html.dark [class~="text-teal-700"],
+    html.dark [class~="text-teal-800"],
+    html.dark [class~="text-green-600"],
+    html.dark [class~="text-green-700"],
+    html.dark [class~="text-purple-600"] {
+      color: #5eead4 !important;
+    }
+
+    html.dark [class~="bg-clip-text"] {
+      background-image: none !important;
+      color: hsl(var(--foreground)) !important;
+      -webkit-text-fill-color: currentColor;
+    }
+
+    html.dark [class~="border-slate-200"],
+    html.dark [class~="border-slate-100"],
+    html.dark [class~="border-gray-200"],
+    html.dark [class~="border-gray-100"] {
+      border-color: hsl(var(--border)) !important;
+    }
+
+    html.dark input,
+    html.dark textarea,
+    html.dark select {
+      border-color: hsl(var(--input));
+      background-color: hsl(var(--card));
+      color: hsl(var(--foreground));
+    }
+  }
 
 .grainy {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAElBMVEUAAAD8/vz08vT09vT8+vzs7uxH16TeAAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAuFJREFUOI0Vk+3NLiEIRG1B8ClAYAsQ2AIEt4D9ePtv5Xp/mZgYJ2fOFJKEfInkVWY2aglmQFkimRTV7MblYyVqD7HXyhKsSuPX12MeDhRHLtGvRG+P+B/S0Vu4OswR9tmvwNPyhdCDbVayJGads/WiUWcjCvCnruTBNHS9gmX2VzVbk7ZvB1gb1hkWFGl+A/n+/FowcO34U/XvKqZ/fHY+6vgRfU92XrOBUbGeeDfQmjWjdrK+frc6FdGReQhfSF5JvR29O2QrfNw1huTwlgsyXLo0u+5So82sgv7tsFZR2nxB6lXiquHrfD8nfYZ9SeT0LiuvSoVrxGY16pCNRZKqvwWsn5OHypPBELzohMCaRaa0ceTHYqe7X/gfJEEtKFbJpWoNqO+aS1cuTykGPpK5Ga48m6L3NefTr013KqYBQu929iP1oQ/7UwSR+i3zqruUmT84qmhzLpxyj7pr9kg7LKvqaXxZmdpn+6o8sHqSqojy02gU3U8q9PnpidiaLks0mbMYz+q2uVXsoBQ8bfURULYxRgZVYCHMv9F4OA7qxT2NPPpvGQ/sTDH2yznKh7E2AcErfcNsaIoN1izzbJiaY63x4QjUFdBSvDCvugPpu5xDny0jzEeuUQbcP1aGT9V90uixngTRLYNEIIZ6yOF1H8tm7rj2JxiefsVy53zGVy3ag5uuPsdufYOzYxLRxngKe7nhx3VAq54pmz/DK9/Q3aDam2Yt3hNXB4HuU87jKNd/CKZn77Qdn5QkXPfqSkhk7hGOXXB+7v09KbBbqdvxGqa0AqfK/atIrL2WXdAgXAJ43Wtwe/aIoacXezeGPMlhDOHDbSfHnaXsL2QzbT82GRwZuezdwcoWzx5pnOnGMUdHuiY7lhdyWzWiHnucLZQxYStMJbtcydHaQ6vtMbe0AcDbxG+QG14AL94xry4297xpy9Cpf1OoxZ740gHDfrK+gtsy0xabwJmfgtCeii79B6aj0SJeLbd7AAAAAElFTkSuQmCC);
@@ -220,6 +319,66 @@
 }
 .animate-slide-up {
   animation: slide-up 1s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+.demo-page {
+  animation: demo-stack-in 500ms ease-out both;
+  animation-delay: calc(var(--page-index) * 150ms);
+}
+
+.demo-upload-ring {
+  animation: demo-ring-fill 1.2s ease-out 300ms both;
+  transform-origin: center;
+}
+
+.demo-question {
+  animation: demo-enter 400ms ease-out both;
+}
+
+.demo-answer {
+  animation: demo-enter 450ms ease-out 250ms both;
+}
+
+.demo-insight {
+  animation: demo-enter 450ms ease-out both;
+}
+
+.demo-insight + .demo-insight {
+  animation-delay: 150ms;
+}
+
+.demo-close {
+  animation: demo-enter 500ms ease-out both;
+}
+
+@keyframes demo-stack-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(calc(var(--page-index) * -3px)); }
+}
+
+@keyframes demo-ring-fill {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes demo-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* --- Animations for Hero/Features --- */

@@ -422,7 +422,16 @@ graph TB
 | `PINECONE_API_KEY`   | Pinecone vector database key   | ✅       |
 | `PINECONE_INDEX_NAME` | Pinecone index name (defaults to `lexinote`) | ✅ |
 | `STRIPE_SECRET_KEY`  | Stripe payment processing key  | ✅       |
+| `STRIPE_PRO_MONTHLY_PRICE_ID` | Stripe test-mode price ID for the CAD $5/month Pro plan | ✅ |
+| `STRIPE_PRO_YEARLY_PRICE_ID` | Stripe test-mode price ID for the CAD $45/year Pro plan | ✅ |
+| `STRIPE_PRO_MONTHLY_PRICE_ID_PRODUCTION` | Stripe live-mode price ID for the CAD $5/month Pro plan | ✅ |
+| `STRIPE_PRO_YEARLY_PRICE_ID_PRODUCTION` | Stripe live-mode price ID for the CAD $45/year Pro plan | ✅ |
 | `UPLOADTHING_TOKEN`  | UploadThing API token          | ✅       |
+
+Create recurring Stripe prices in CAD for $5 monthly and $45 yearly. Set the
+test-mode price IDs in the first two variables and the live-mode price IDs in
+the `*_PRODUCTION` variables. Local development uses test-mode prices;
+production uses live-mode prices.
 
 Create an UploadThing token from your app's API Keys page and set it as
 `UPLOADTHING_TOKEN` in your local environment file. Older `UPLOADTHING_SECRET`
@@ -696,7 +705,6 @@ Special thanks to:
 [🌐 Website](https://www.lexinote.tech/) • [📧 Contact](mailto:support@lexinote.tech) •
 
 </div>
-
 
 
 

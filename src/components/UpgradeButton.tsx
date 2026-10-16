@@ -5,25 +5,38 @@ import { Button } from "./ui/button";
 import { trpc } from "@/app/_trpc/client";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useToast } from "./ui/use-toast";
 
-const UpgradeButton = () => {
+interface UpgradeButtonProps {
+  interval: "month" | "year";
+}
+
+const UpgradeButton = ({ interval }: UpgradeButtonProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { toast } = useToast();
 
   const { mutate: createStripeSession } = trpc.createStripeSession.useMutation({
     onSuccess: ({ url }) => {
       window.location.href = url ?? "/dashboard/billing";
     },
+    onError: (error) => {
+      toast({
+        title: "Could not start checkout",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   return (
     <Button
-      onClick={() => createStripeSession()}
+      onClick={() => createStripeSession({ interval })}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
         "w-full h-12 relative overflow-hidden group",
-        "bg-gradient-to-r from-purple-600 to-blue-600",
-        "hover:from-purple-700 hover:to-blue-700",
+        "bg-teal-700",
+        "hover:bg-teal-800",
         "transform transition-all duration-300 ease-out",
         "hover:scale-105 hover:shadow-xl",
         "border-0 text-white font-semibold"
@@ -39,7 +52,7 @@ const UpgradeButton = () => {
           isHovered && "rotate-12 scale-110"
         )} />
         
-        <span>Upgrade now</span>
+        <span>Choose {interval === "month" ? "monthly" : "yearly"}</span>
         
         <ArrowRight className={cn(
           "w-5 h-5 transition-all duration-300",

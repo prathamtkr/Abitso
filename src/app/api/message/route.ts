@@ -105,9 +105,18 @@ export const POST = async (req: NextRequest) => {
   }))
 
   // Compose prompt for Gemini
+  const documentContext = results.map((result) => {
+    const pageNumber = result.metadata?.loc?.pageNumber ?? result.metadata?.pageNumber;
+    const sourceLabel =
+      typeof pageNumber === "number" && Number.isInteger(pageNumber) && pageNumber > 0
+        ? `[Source: page ${pageNumber}]`
+        : "[Source page unavailable]";
+    return `${sourceLabel}\n${result.pageContent}`;
+  }).join("\n\n");
+
   const prompt = `
-Use the following pieces of context (or previous conversation if needed) to answer the user's question in markdown format.
-If you don't know the answer, just say that you don't know, don't try to make up an answer.
+Use the provided document context and conversation to answer the user's question in markdown.
+Do not invent facts. Cite supported claims with the exact page label shown before each context passage, formatted as [Source: page N]. If a passage has no page number, do not invent one.
 
 ----------------
 
@@ -120,7 +129,7 @@ ${formattedMessages.map((message: any) => {
 ----------------
 
 CONTEXT:
-${results.map((r) => r.pageContent).join('\n\n')}
+${documentContext}
 
 USER INPUT: ${message}
 `;

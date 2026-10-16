@@ -80,7 +80,7 @@ const ShareDocumentButton = ({ fileId, fileName }: ShareDocumentButtonProps) => 
         <Button
           variant="outline"
           size="sm"
-          className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-green-400 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+          className="rounded-[10px] border-slate-300 bg-white text-slate-700 transition-colors hover:border-teal-700 hover:bg-teal-50 hover:text-teal-800"
         >
           <Share2 className="h-4 w-4 mr-2" />
           Share

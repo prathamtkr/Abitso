@@ -1,180 +1,117 @@
 "use client";
 
-import { trpc } from '@/app/_trpc/client';
-import { PLANS } from '@/config/stripe';
-import { ChevronLeft, Loader2, XCircle, FileText, Sparkles, CheckCircle } from 'lucide-react';
-import Link from 'next/link';
-import { buttonVariants } from '../ui/button';
-import { ChatContextProvider } from './ChatContext';
-import ChatInput from './ChatInput';
-import Messages from './Messages';
+import { useContext, useEffect, useRef } from "react";
+import { trpc } from "@/app/_trpc/client";
+import { PLANS } from "@/config/stripe";
+import { FileText, Loader2, MessageSquare, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { buttonVariants } from "../ui/button";
+import { ChatContext, ChatContextProvider } from "./ChatContext";
+import ChatInput from "./ChatInput";
+import Messages from "./Messages";
+
+type AssistantMode = "chat" | "summary" | "key-points";
 
 interface ChatWrapperProps {
   fileId: string;
   isSubscribed: boolean;
+  mode?: AssistantMode;
 }
 
-const ChatWrapper = ({ fileId, isSubscribed }: ChatWrapperProps) => {
+function Conversation({ fileId, mode }: { fileId: string; mode: AssistantMode }) {
+  const { sendMessage } = useContext(ChatContext);
+  const lastRequestedMode = useRef<AssistantMode>("chat");
+
+  useEffect(() => {
+    if (mode === "chat") {
+      lastRequestedMode.current = "chat";
+      return;
+    }
+    if (lastRequestedMode.current === mode) return;
+
+    lastRequestedMode.current = mode;
+    const prompt =
+      mode === "summary"
+        ? "Summarize this document. Organize the main ideas clearly and cite the relevant PDF pages using [Source: page N]."
+        : "List the most important key points from this document. Keep each point concise and cite the relevant PDF pages using [Source: page N].";
+    sendMessage(prompt);
+  }, [mode, sendMessage]);
+
+  return (
+    <div className="flex h-full min-h-0 flex-col bg-white">
+      {mode !== "chat" && (
+        <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5 text-xs text-slate-500">
+          {mode === "summary" ? <Sparkles className="h-3.5 w-3.5 text-teal-700" /> : <FileText className="h-3.5 w-3.5 text-teal-700" />}
+          {mode === "summary" ? "Document summary" : "Key points from this document"}
+        </div>
+      )}
+      <div className="min-h-0 flex-1 overflow-hidden">
+        <Messages fileId={fileId} />
+      </div>
+      <div className="border-t border-slate-200 bg-white p-3">
+        <ChatInput />
+      </div>
+    </div>
+  );
+}
+
+const ChatWrapper = ({ fileId, isSubscribed, mode = "chat" }: ChatWrapperProps) => {
   const { data, isLoading } = trpc.getFileUploadStatus.useQuery(
-    {
-      fileId,
-    },
+    { fileId },
     {
       refetchInterval: ({ state }) =>
-        state.data?.status === "FAILED" || state.data?.status === "SUCCESS"
-          ? false
-          : 500,
+        state.data?.status === "FAILED" || state.data?.status === "SUCCESS" ? false : 500,
     }
   );
 
-  if (isLoading)
+  if (isLoading || data?.status === "PROCESSING") {
     return (
-      <div className="h-full w-full bg-white flex flex-col">
-        <div className="flex-1 flex justify-center items-center p-8">
-          <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in-50 duration-700">
-            
-            {/* Animated loading icon */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full blur-xl opacity-30 animate-pulse" />
-              <div className="relative bg-white shadow-lg p-4 rounded-full border border-gray-200">
-                <Loader2 className="h-8 w-8 text-indigo-500 animate-spin" />
-              </div>
-            </div>
-
-            {/* Animated title */}
-            <div className="text-center space-y-3">
-              <h3 className="font-bold text-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent animate-pulse">
-                Initializing Chat
-              </h3>
-              <p className="text-gray-600 text-sm max-w-md">
-                Setting up your intelligent document assistant...
-              </p>
-            </div>
-
-            {/* Progress dots */}
-            <div className="flex gap-2">
-              {[0, 1, 2].map((i) => (
-                <div
-                  key={i}
-                  className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"
-                  style={{ animationDelay: `${i * 0.2}s` }}
-                />
-              ))}
-            </div>
-          </div>
+      <div className="flex h-full min-h-64 flex-col items-center justify-center gap-4 bg-white p-8 text-center">
+        <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
+          {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <FileText className="h-5 w-5" />}
+        </span>
+        <div>
+          <h3 className="text-sm font-semibold text-slate-900">
+            {isLoading ? "Preparing assistant" : "Analyzing your PDF"}
+          </h3>
+          <p className="mt-1 text-xs leading-5 text-slate-500">
+            {isLoading ? "Checking document status…" : "Chat and insights will be ready when processing finishes."}
+          </p>
         </div>
-        <div className="p-4 border-t bg-gray-50">
-          <ChatInput isDisabled />
+        <div className="h-1 w-40 overflow-hidden rounded-full bg-slate-100">
+          <div className="h-full w-2/3 rounded-full bg-teal-600" />
         </div>
       </div>
     );
+  }
 
-  if (data?.status === "PROCESSING")
+  if (data?.status === "FAILED") {
     return (
-      <div className="h-full w-full bg-white flex flex-col">
-        <div className="flex-1 flex justify-center items-center p-8">
-          <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in-50 duration-700">
-            
-            {/* Processing animation */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full blur-xl opacity-30 animate-pulse" />
-              <div className="relative bg-white shadow-lg p-4 rounded-full border border-gray-200">
-                <div className="relative">
-                  <FileText className="h-8 w-8 text-amber-500" />
-                  <Sparkles className="absolute -top-1 -right-1 h-4 w-4 text-yellow-500 animate-ping" />
-                </div>
-              </div>
-            </div>
-
-            {/* Processing status */}
-            <div className="text-center space-y-3">
-              <h3 className="font-bold text-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent animate-pulse">
-                Processing PDF
-              </h3>
-              <p className="text-gray-600 text-sm max-w-md">
-                Our AI is analyzing your document and preparing intelligent responses...
-              </p>
-            </div>
-
-            {/* Processing progress bar */}
-            <div className="w-64 h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full animate-pulse" style={{ width: '60%' }} />
-            </div>
-          </div>
+      <div className="flex h-full min-h-64 flex-col items-center justify-center gap-3 bg-white p-8 text-center">
+        <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+          <FileText className="h-5 w-5" />
+        </span>
+        <div>
+          <h3 className="text-sm font-semibold text-slate-900">This PDF could not be analyzed</h3>
+          <p className="mt-1 max-w-xs text-xs leading-5 text-slate-500">
+            Check the document size and processing settings, then upload it again.
+            {` Your ${isSubscribed ? "Pro" : "Free"} plan supports up to ${
+              isSubscribed
+                ? PLANS.find((plan) => plan.name === "Pro")?.pagesPerPdf
+                : PLANS.find((plan) => plan.name === "Free")?.pagesPerPdf
+            } pages.`}
+          </p>
         </div>
-        <div className="p-4 border-t bg-gray-50">
-          <ChatInput isDisabled />
-        </div>
+        <Link href="/dashboard" className={buttonVariants({ variant: "outline", className: "mt-2 rounded-[10px]" })}>
+          <MessageSquare className="mr-2 h-4 w-4" /> Return to documents
+        </Link>
       </div>
     );
-
-  if (data?.status === "FAILED")
-    return (
-      <div className="h-full w-full bg-white flex flex-col">
-        <div className="flex-1 flex justify-center items-center p-8">
-          <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in-50 duration-700">
-            
-            {/* Error animation */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-500 rounded-full blur-xl opacity-30 animate-pulse" />
-              <div className="relative bg-white shadow-lg p-4 rounded-full border-2 border-red-200">
-                <XCircle className="h-8 w-8 text-red-500 animate-bounce" />
-              </div>
-            </div>
-
-            {/* Error message */}
-            <div className="text-center space-y-4">
-              <h3 className="font-bold text-2xl text-red-500">
-                Document Too Large
-              </h3>
-              
-              <div className="bg-red-50 border border-red-200 rounded-2xl p-6 max-w-md">
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  Your{" "}
-                  <span className="font-semibold px-2 py-1 bg-red-100 text-red-700 rounded-lg">
-                    {isSubscribed ? "Pro" : "Free"}
-                  </span>{" "}
-                  plan supports up to{" "}
-                  <span className="font-semibold text-gray-900">
-                    {isSubscribed
-                      ? PLANS.find((p) => p.name === "Pro")?.pagesPerPdf
-                      : PLANS.find((p) => p.name === "Free")?.pagesPerPdf}{" "}
-                    pages
-                  </span>{" "}
-                  per PDF document.
-                </p>
-              </div>
-
-              
-              <Link
-                href="/dashboard"
-                className={buttonVariants({
-                  variant: "secondary",
-                  className: "mt-6 group bg-gray-100 hover:bg-gray-200 transition-all duration-300 hover:scale-105 text-gray-700 border border-gray-300",
-                })}
-              >
-                <ChevronLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
-                <span>Return to Dashboard</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="p-4 border-t bg-gray-50">
-          <ChatInput isDisabled />
-        </div>
-      </div>
-    );
+  }
 
   return (
     <ChatContextProvider fileId={fileId}>
-      <div className="h-full w-full bg-white flex flex-col">
-        <div className="flex-1 overflow-hidden">
-          <Messages fileId={fileId} />
-        </div>
-        <div className="border-t bg-white">
-          <ChatInput />
-        </div>
-      </div>
+      <Conversation fileId={fileId} mode={mode} />
     </ChatContextProvider>
   );
 };

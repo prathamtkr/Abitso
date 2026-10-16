@@ -210,10 +210,15 @@ const Page = async () => {
                     </h3>
                     <p className="text-gray-500">{tagline}</p>
                     <p className="my-5 font-display text-6xl font-semibold flex items-center justify-center gap-2">
-                      <span className="text-3xl font-bold text-blue-600">₹</span>
+                      <span className="text-3xl font-bold text-teal-700">$</span>
                       {price}
                     </p>
-                    <p className="text-gray-500">per month</p>
+                    <p className="text-gray-500">CAD per month</p>
+                    {plan === "Pro" && (
+                      <p className="mt-2 text-sm font-medium text-teal-800">
+                        $45 CAD per year <span className="text-slate-500">(save 25%)</span>
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex h-20 items-center justify-center border-b border-t border-gray-200 bg-gray-50/70">
@@ -309,7 +314,10 @@ const Page = async () => {
                         </p>
                       </div>
                     ) : user ? (
-                      <UpgradeButton />
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <UpgradeButton interval="month" />
+                        <UpgradeButton interval="year" />
+                      </div>
                     ) : (
                       <Link
                         href="/sign-in"
@@ -317,7 +325,7 @@ const Page = async () => {
                           className: "w-full",
                         })}
                       >
-                        {user ? "Upgrade now" : "Sign up"}
+                        Sign up to choose a plan
                         <ArrowRight className="h-5 w-5 ml-1.5" />
                       </Link>
                     )}

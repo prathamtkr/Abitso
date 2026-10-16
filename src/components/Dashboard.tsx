@@ -42,8 +42,8 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { useToast } from "./ui/use-toast";
 
 export const metadata = {
-  title: "Lexinote – Dashboard",
-  description: "Your Lexinote dashboard.",
+  title: "Abitso – Dashboard",
+  description: "Your Abitso document workspace.",
 };
 
 type ViewMode = "grid" | "list";
@@ -225,8 +225,8 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
     try {
       const shareUrl = `${window.location.origin}/dashboard/${file.id}`;
       const shareData = {
-        title: `LexiNote: ${file.name}`,
-        text: `Check out this PDF document on LexiNote AI`,
+        title: `Abitso: ${file.name}`,
+        text: `Check out this PDF document on Abitso AI`,
         url: shareUrl,
       };
 
@@ -297,7 +297,7 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
       >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div>
-            <h1 className="text-4xl lg:text-5xl leading-snug font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mt-1 pb-2">
+            <h1 className="mt-1 pb-2 text-4xl font-extrabold leading-tight tracking-[-0.03em] text-slate-900 lg:text-5xl">
               My Files
             </h1>
             <p className="text-gray-600 mt-2">Manage and organize your PDF documents</p>
@@ -381,14 +381,14 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                               className={cn(
                                 "p-3 rounded-xl border-2 transition-all relative",
                                 editForm.iconIndex === index 
-                                  ? "border-blue-500 bg-blue-50 scale-105" 
+                                  ? "border-teal-700 bg-teal-50 scale-105" 
                                   : "border-gray-200 hover:border-gray-300 hover:scale-105",
                                 isSaving && "opacity-50 cursor-not-allowed hover:scale-100"
                               )}
                             >
                               <IconComponent className="w-5 h-5 mx-auto" />
                               {editForm.iconIndex === index && (
-                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full" />
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-teal-700 rounded-full" />
                               )}
                             </button>
                           );
@@ -423,7 +423,7 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                     </div>
 
                     {/* Enhanced Preview with proper text handling */}
-                    <div className="p-4 bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl border">
+                    <div className="p-4 bg-[#F8FAFA] rounded-xl border border-slate-200">
                       <label className="block text-sm font-medium mb-3">Live Preview</label>
                       <div className="flex items-start gap-3">
                         <div className={cn(
@@ -462,8 +462,8 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                         className={cn(
                           "flex-1 transition-all",
                           isSaving 
-                            ? "bg-blue-400 cursor-not-allowed" 
-                            : "bg-blue-600 hover:bg-blue-700 hover:scale-105"
+                            ? "bg-teal-400 cursor-not-allowed" 
+                            : "bg-teal-700 hover:bg-teal-800 hover:scale-105"
                         )}
                         disabled={isSaving || !editForm.name.trim()}
                       >
@@ -498,7 +498,7 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                     {isSaving && (
                       <div className="absolute inset-0 bg-white/50 backdrop-blur-sm rounded-lg flex items-center justify-center z-50">
                         <div className="bg-white p-4 rounded-xl shadow-lg flex items-center gap-3">
-                          <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                          <Loader2 className="w-5 h-5 animate-spin text-teal-700" />
                           <span className="text-sm font-medium">Saving changes...</span>
                         </div>
                       </div>
@@ -542,14 +542,14 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                   <div className="flex items-center gap-3">
                     <div className={cn(
                       "w-10 h-10 rounded-lg flex items-center justify-center",
-                      stat.color === 'blue' && "bg-blue-100",
+                      stat.color === 'blue' && "bg-teal-100",
                       stat.color === 'yellow' && "bg-yellow-100", 
                       stat.color === 'green' && "bg-green-100",
                       stat.color === 'red' && "bg-red-100"
                     )}>
                       <stat.icon className={cn(
                         "w-5 h-5",
-                        stat.color === 'blue' && "text-blue-600",
+                        stat.color === 'blue' && "text-teal-800",
                         stat.color === 'yellow' && "text-yellow-600",
                         stat.color === 'green' && "text-green-600", 
                         stat.color === 'red' && "text-red-600"
@@ -665,8 +665,8 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                 className={cn(
                   "group relative bg-white/80 backdrop-blur-sm rounded-2xl border shadow-sm overflow-hidden",
                   "hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2 hover:rotate-1 transition-all duration-500 ease-out",
-                  "hover:bg-gradient-to-br hover:from-white hover:to-blue-50/30",
-                  "hover:border-blue-200/50",
+                  "hover:bg-teal-50/50",
+                  "hover:border-teal-200",
                   viewMode === "list" ? "flex items-center p-4" : "p-6"
                 )}
                 whileHover={{ 
@@ -676,7 +676,7 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                   transition: { duration: 0.3 }
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-blue-50/0 group-hover:to-blue-50/20 transition-all duration-500 rounded-2xl pointer-events-none" />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-teal-50/0 transition-colors group-hover:bg-teal-50/20" />
                 
                 {/* File Card Content */}
                 <Link
@@ -704,7 +704,7 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                      <h3 className="font-semibold text-gray-900 group-hover:text-teal-800 transition-colors truncate">
                         {file.name}
                       </h3>
                       <div className="flex items-center gap-2 mt-1">
@@ -740,7 +740,7 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                   <Button 
                     size="sm" 
                     variant="ghost" 
-                    className="h-8 w-8 p-0 hover:bg-blue-100 hover:text-blue-600 hover:scale-110 transition-all duration-200"
+                    className="h-8 w-8 p-0 hover:bg-teal-50 hover:text-teal-800 hover:scale-110 transition-all duration-200"
                     onClick={(e) => {
                       e.preventDefault();
                       handleEditFile(file);
@@ -785,16 +785,10 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                 {/* Processing Progress */}
                 {file.uploadStatus === "PROCESSING" && (
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 overflow-hidden rounded-b-2xl">
-                    <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse" style={{ width: "60%" }} />
+                    <div className="h-full bg-teal-700 animate-pulse" style={{ width: "60%" }} />
                   </div>
                 )}
 
-                {/* Sparkle effect on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute top-4 right-4 w-2 h-2 bg-blue-400 rounded-full animate-ping" />
-                  <div className="absolute top-6 right-8 w-1 h-1 bg-purple-400 rounded-full animate-ping" style={{ animationDelay: '0.5s' }} />
-                  <div className="absolute top-8 right-6 w-1.5 h-1.5 bg-indigo-400 rounded-full animate-ping" style={{ animationDelay: '1s' }} />
-                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -806,103 +800,8 @@ const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
             exit={{ opacity: 0, scale: 0.9 }}
             className="flex flex-col items-center justify-center py-16 text-center"
           >
-            {/* Animated Upload Icon */}
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center mb-6 relative overflow-hidden">
-              {/* Background animation */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-200/50 to-purple-200/50 rounded-full animate-pulse" />
-              
-              {/* Main document icon with upload arrow */}
-              <div className="relative z-10">
-                <motion.div
-                  animate={{ 
-                    y: [0, -4, 0],
-                    scale: [1, 1.05, 1]
-                  }}
-                  transition={{ 
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  className="flex flex-col items-center"
-                >
-                  {/* Upload arrow */}
-                  <motion.div
-                    animate={{ 
-                      y: [0, -8, 0],
-                      opacity: [0.5, 1, 0.5]
-                    }}
-                    transition={{ 
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 0.5
-                    }}
-                    className="mb-1"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-blue-500">
-                      <path 
-                        d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z" 
-                        fill="currentColor"
-                        transform="rotate(-90 12 12)"
-                      />
-                    </svg>
-                  </motion.div>
-                  
-                  {/* Document icon */}
-                  <motion.div
-                    animate={{ 
-                      rotateY: [0, 10, 0, -10, 0]
-                    }}
-                    transition={{ 
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    <FileText className="w-8 h-8 text-blue-600" />
-                  </motion.div>
-                </motion.div>
-              </div>
-              
-              {/* Floating particles */}
-              <motion.div
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.6, 0.3]
-                }}
-                transition={{ 
-                  duration: 2.5,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="absolute top-2 right-3 w-2 h-2 bg-blue-400 rounded-full"
-              />
-              <motion.div
-                animate={{ 
-                  scale: [1, 1.3, 1],
-                  opacity: [0.2, 0.5, 0.2]
-                }}
-                transition={{ 
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 1
-                }}
-                className="absolute bottom-3 left-2 w-1.5 h-1.5 bg-purple-400 rounded-full"
-              />
-              <motion.div
-                animate={{ 
-                  scale: [1, 1.1, 1],
-                  opacity: [0.4, 0.7, 0.4]
-                }}
-                transition={{ 
-                  duration: 2.2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 1.5
-                }}
-                className="absolute top-4 left-4 w-1 h-1 bg-indigo-400 rounded-full"
-              />
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-slate-200 bg-teal-50 text-teal-800">
+              <FileText className="h-9 w-9" />
             </div>
             
             <h3 className="text-xl font-semibold text-gray-900 mb-2">

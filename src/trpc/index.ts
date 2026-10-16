@@ -612,12 +612,14 @@ export const appRouter = router({
     }),
 
   // Stripe session creation
-  createStripeSession: privateProcedure.mutation(
-    async ({ ctx }) => {
+  createStripeSession: privateProcedure
+    .input(z.object({ interval: z.enum(['month', 'year']).optional() }))
+    .mutation(async ({ ctx, input }) => {
       const { userId } = ctx
 
       const billingUrl = absoluteUrl('/dashboard/billing')
       const successUrl = absoluteUrl('/dashboard?upgrade=success')
+      const interval = input.interval ?? 'month'
 
       if (!userId) {
         throw new TRPCError({ code: 'UNAUTHORIZED' })
@@ -644,6 +646,28 @@ export const appRouter = router({
         return { url: stripeSession.url }
       }
 
+      const proPlan = PLANS.find((plan) => plan.name === 'Pro')
+      const priceMode = process.env.NODE_ENV === 'production' ? 'production' : 'test'
+      const priceId =
+        interval === 'year'
+          ? proPlan?.price.yearlyPriceIds[priceMode]
+          : proPlan?.price.priceIds[priceMode]
+
+      if (!priceId) {
+        const priceVariable =
+          interval === 'year'
+            ? priceMode === 'production'
+              ? 'STRIPE_PRO_YEARLY_PRICE_ID_PRODUCTION'
+              : 'STRIPE_PRO_YEARLY_PRICE_ID'
+            : priceMode === 'production'
+              ? 'STRIPE_PRO_MONTHLY_PRICE_ID_PRODUCTION'
+              : 'STRIPE_PRO_MONTHLY_PRICE_ID'
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: `Stripe ${interval}ly price is not configured. Set ${priceVariable}.`,
+        })
+      }
+
       const stripeSession = await stripe.checkout.sessions.create({
         success_url: successUrl,
         cancel_url: billingUrl,
@@ -652,7 +676,7 @@ export const appRouter = router({
         billing_address_collection: 'auto',
         line_items: [
           {
-            price: PLANS.find((plan) => plan.name === 'Pro')?.price.priceIds.test,
+            price: priceId,
             quantity: 1,
           },
         ],
@@ -662,8 +686,7 @@ export const appRouter = router({
       })
 
       return { url: stripeSession.url }
-    }
-  ),
+    }),
 
   // Export user data
   exportUserData: privateProcedure

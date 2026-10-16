@@ -6,6 +6,7 @@ import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 
 type StreamResponse = {
   addMessage():void,
+  sendMessage(message: string): void,
   message:string,
   handleInputChange(event: React.ChangeEvent<HTMLTextAreaElement>):void,
   isLoading:boolean
@@ -18,6 +19,7 @@ interface Props{
 
 export const ChatContext = createContext<StreamResponse>({
   addMessage: () => { },
+  sendMessage: () => { },
   message: "",
   handleInputChange: () => { },
   isLoading: false
@@ -33,7 +35,7 @@ export const ChatContextProvider = ({fileId, children}:Props) => {
 
   const backupMessage = useRef("");
 
-  const { mutate: sendMessage } = useMutation({
+  const { mutate: sendMessageMutation } = useMutation({
     mutationFn: async ({message}:{message:string}) => {
       const response = await fetch("/api/message", {
         method: "POST",
@@ -202,7 +204,12 @@ export const ChatContextProvider = ({fileId, children}:Props) => {
     }
   }); 
 
-  const addMessage = () => sendMessage({ message })
+  const sendMessage = (messageToSend: string) => {
+    const trimmedMessage = messageToSend.trim();
+    if (trimmedMessage) sendMessageMutation({ message: trimmedMessage });
+  };
+
+  const addMessage = () => sendMessage(message)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value)
@@ -211,6 +218,7 @@ export const ChatContextProvider = ({fileId, children}:Props) => {
   return (
     <ChatContext.Provider value={{
       addMessage,
+      sendMessage,
       message,
       handleInputChange,
       isLoading

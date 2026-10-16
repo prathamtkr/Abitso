@@ -71,7 +71,7 @@ const MobileNav = ({ isAuth, userInfo }: MobileNavProps) => {
           <div className="absolute top-16 left-0 right-0 bg-white border-b border-zinc-200 shadow-xl">
             {/* User Info Section for Authenticated Users */}
             {isAuth && userInfo && (
-              <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+              <div className="px-6 py-4 border-b border-slate-200 bg-[#F0FDFA]">
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
                     {userInfo.imageUrl ? (
@@ -83,8 +83,8 @@ const MobileNav = ({ isAuth, userInfo }: MobileNavProps) => {
                         height={40}
                       />
                     ) : (
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                        <User className="h-5 w-5 text-white" />
+                      <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center">
+                        <User className="h-5 w-5 text-teal-800" />
                       </div>
                     )}
                   </div>
@@ -107,7 +107,7 @@ const MobileNav = ({ isAuth, userInfo }: MobileNavProps) => {
                   <li>
                     <Link
                       onClick={() => closeOnCurrent("/sign-up")}
-                      className="flex items-center w-full font-semibold text-green-600 py-3 px-2 rounded-lg hover:bg-green-50 transition-colors mt-2"
+                      className="flex items-center w-full font-semibold text-teal-800 py-3 px-2 rounded-lg hover:bg-teal-50 transition-colors mt-2"
                       href="/sign-up"
                     >
                       Get started

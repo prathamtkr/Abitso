@@ -121,17 +121,11 @@ const Messages = ({ fileId }: MessagesProps) => {
           <div className="relative group">
             <div className="relative bg-white p-8 rounded-3xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
               <div className="relative">
-                <div className="p-3 bg-blue-500 rounded-2xl shadow-md">
+                <div className="p-3 bg-teal-700 rounded-xl">
                   <Brain className="h-12 w-12 text-white" />
                 </div>
                 
                 {/* Simple floating elements */}
-                <Sparkles className="absolute -top-3 -right-3 h-7 w-7 text-yellow-500 animate-bounce" 
-                          style={{ animationDelay: '0.5s' }} />
-                <Zap className="absolute -bottom-2 -left-2 h-5 w-5 text-blue-500 animate-ping" 
-                     style={{ animationDelay: '1s' }} />
-                <div className="absolute top-1/2 -right-4 w-2 h-2 bg-blue-500 rounded-full animate-bounce opacity-70"
-                     style={{ animationDelay: '1.5s' }} />
               </div>
             </div>
           </div>
@@ -139,7 +133,7 @@ const Messages = ({ fileId }: MessagesProps) => {
           {/* Simple text content */}
           <div className="text-center space-y-6 max-w-lg">
             <h3 className="font-bold text-3xl text-gray-900 animate-in slide-in-from-top-4 duration-700 delay-200">
-              Ready to Explore!
+              Ready to explore your PDF
             </h3>
             
             <p className="text-gray-600 text-lg leading-relaxed animate-in slide-in-from-bottom-4 duration-700 delay-300">
@@ -155,7 +149,7 @@ const Messages = ({ fileId }: MessagesProps) => {
               ].map((suggestion, i) => (
                 <div
                   key={i}
-                  className="group flex items-center gap-2 px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-full text-blue-700 shadow-sm hover:shadow-md transition-all cursor-pointer hover:bg-blue-50 hover:border-blue-300"
+                  className="group flex items-center gap-2 px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-[10px] text-teal-800 transition-colors cursor-pointer hover:bg-teal-50 hover:border-teal-200"
                 >
                   <suggestion.icon className="h-4 w-4 group-hover:rotate-12 transition-transform duration-300" />
                   <span className="font-medium">{suggestion.text}</span>
