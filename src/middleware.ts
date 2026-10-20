@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const kindeMiddleware = withAuth({
   loginPage: '/sign-in',
+  // Kinde SDK 2.1.5 calls this option unconditionally when an options object
+  // is supplied. Returning undefined delegates authorization to its built-in
+  // issuer, signature-algorithm, expiry, and audience checks.
+  isAuthorized: () => undefined,
 }) as (request: NextRequest) => Promise<NextResponse | undefined>;
 
 const sessionCookieNames = [
