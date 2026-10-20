@@ -4,6 +4,6 @@ export const config = {
   matcher: ['/dashboard/:path*', '/auth-callback'],
 };
 
-export default withAuth(async function middleware() {}, {
+export default withAuth({
   loginPage: '/sign-in',
 });
