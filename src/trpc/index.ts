@@ -669,11 +669,19 @@ export const appRouter = router({
       }
 
       const stripeSession = await stripe.checkout.sessions.create({
+        ui_mode: 'hosted',
         success_url: successUrl,
         cancel_url: billingUrl,
-        payment_method_types: ['card'],
         mode: 'subscription',
         billing_address_collection: 'auto',
+        phone_number_collection: { enabled: false },
+        automatic_tax: { enabled: false },
+        allow_promotion_codes: false,
+        payment_method_collection: 'always',
+        ...{
+          integration_identifier: 'hosted_web_0002',
+          origin_context: 'web',
+        },
         line_items: [
           {
             price: priceId,
