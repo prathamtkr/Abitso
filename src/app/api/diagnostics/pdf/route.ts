@@ -1,8 +1,20 @@
-import { NextRequest } from "next/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { checkPineconeHealth, PINECONE_INDEX_NAME } from "@/lib/pinecone";
 import { testGeminiConnection, GEMINI_CONFIG } from "@/lib/geminiai";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
+  // This endpoint makes external service calls and reports deployment config.
+  // Keep it unavailable in production and require a session during development.
+  if (process.env.NODE_ENV === "production") {
+    return new Response("Not found", { status: 404 });
+  }
+
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+  if (!user?.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   try {
     console.log("Running PDF processing diagnostics...");
     
@@ -45,8 +57,7 @@ export async function GET(request: NextRequest) {
     
   } catch (error: any) {
     return Response.json({
-      error: error.message,
-      stack: error.stack,
+      error: "Diagnostics failed",
       timestamp: new Date().toISOString(),
     }, { status: 500 });
   }

@@ -30,8 +30,8 @@ const nextConfig = {
     return [
       {
         source: '/sign-in',
-        destination: '/api/auth/login',
-        permanent: true,
+        destination: '/api/auth/login?prompt=login',
+        permanent: false,
       },
       {
         source: '/sign-up',

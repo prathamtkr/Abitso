@@ -9,6 +9,9 @@ const AuthCallbackFunction = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const origin = searchParams.get("origin");
+  const safeOrigin = origin && /^dashboard(?:\/[A-Za-z0-9_-]{1,128})?$/.test(origin)
+    ? `/${origin}`
+    : "/dashboard";
 
   // Use the useQuery hook without onSuccess and onError
   const { data, error } = trpc.authCallback.useQuery(undefined, {
@@ -19,12 +22,12 @@ const AuthCallbackFunction = () => {
   // Handle success case
   useEffect(() => {
     if (data?.success) {
-      router.push(origin ? `/${origin}` : "/dashboard");
+      router.push(safeOrigin);
     }
     if (error?.data?.code === "UNAUTHORIZED") {
       router.push("/sign-in");
     }
-  }, [data, error, router, origin]);
+  }, [data, error, router, safeOrigin]);
 
   return (
     <div className="w-full mt-24 flex justify-center">

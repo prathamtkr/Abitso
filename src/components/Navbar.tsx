@@ -45,7 +45,10 @@ const Navbar = async () => {
               <Link href="/pricing" className={buttonVariants({ variant: "ghost", size: "sm", className: "rounded-[10px] text-slate-600 hover:text-teal-800" })}>
                 Pricing
               </Link>
-              <LoginLink className={buttonVariants({ variant: "ghost", size: "sm", className: "rounded-[10px] text-slate-600 hover:text-teal-800" })}>
+              <LoginLink
+                authUrlParams={{ prompt: "login" }}
+                className={buttonVariants({ variant: "ghost", size: "sm", className: "rounded-[10px] text-slate-600 hover:text-teal-800" })}
+              >
                 Sign in
               </LoginLink>
               <RegisterLink className={buttonVariants({ size: "sm", className: "ml-1 rounded-[10px] bg-[#0F766E] font-semibold text-white hover:bg-[#115E59]" })}>
