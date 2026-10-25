@@ -74,9 +74,7 @@
     }
 
     html.dark [class~="bg-white"],
-    html.dark [class~="bg-white/70"],
-    html.dark [class~="bg-white/80"],
-    html.dark [class~="bg-white/90"] {
+    html.dark [class*="bg-white/"] {
       background-color: hsl(var(--card)) !important;
     }
 
@@ -106,6 +104,26 @@
     html.dark [class*="bg-gradient-to-"] {
       background-image: none !important;
       background-color: hsl(var(--background)) !important;
+    }
+
+    html.dark [class*="hover:bg-"]:hover,
+    html.dark [class*="focus:bg-"]:focus,
+    html.dark [class*="focus:bg-"]:focus-visible,
+    html.dark [class*="active:bg-"]:active {
+      background-color: hsl(var(--secondary)) !important;
+    }
+
+    html.dark [class*="hover:bg-red-"]:hover {
+      background-color: hsl(var(--destructive)) !important;
+    }
+
+    html.dark .group:hover [class*="group-hover:bg-"] {
+      background-color: hsl(var(--secondary)) !important;
+    }
+
+    html.dark [class*="hover:text-"]:hover,
+    html.dark [class*="focus:text-"]:focus {
+      color: hsl(var(--accent-foreground)) !important;
     }
 
     html.dark [class~="text-slate-900"],

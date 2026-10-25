@@ -5,7 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import {
+  LoginLink,
+  LogoutLink,
+  RegisterLink,
+} from "@kinde-oss/kinde-auth-nextjs/components";
 
 interface MobileNavProps {
   isAuth: boolean;
@@ -52,7 +56,7 @@ const MobileNav = ({ isAuth, userInfo }: MobileNavProps) => {
     <div className="sm:hidden">
       <button
         onClick={toggleOpen}
-        className="relative z-50 p-2 -m-2 rounded-lg hover:bg-gray-100 transition-colors"
+        className="relative z-50 -m-2 rounded-lg p-2 text-zinc-700 transition-colors hover:bg-gray-100 dark:text-foreground dark:hover:bg-secondary"
         aria-label="Toggle menu"
       >
         {isOpen ? (
@@ -68,10 +72,10 @@ const MobileNav = ({ isAuth, userInfo }: MobileNavProps) => {
             className="absolute inset-0 bg-zinc-800/20 backdrop-blur-sm"
             onClick={toggleOpen}
           />
-          <div className="absolute top-16 left-0 right-0 bg-white border-b border-zinc-200 shadow-xl">
+          <div className="absolute top-16 left-0 right-0 border-b border-zinc-200 bg-white shadow-xl dark:border-border dark:bg-card">
             {/* User Info Section for Authenticated Users */}
             {isAuth && userInfo && (
-              <div className="px-6 py-4 border-b border-slate-200 bg-[#F0FDFA]">
+              <div className="border-b border-slate-200 bg-[#F0FDFA] px-6 py-4 dark:border-border dark:bg-secondary">
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
                     {userInfo.imageUrl ? (
@@ -105,24 +109,22 @@ const MobileNav = ({ isAuth, userInfo }: MobileNavProps) => {
               {!isAuth ? (
                 <>
                   <li>
-                    <Link
+                    <RegisterLink
                       onClick={() => closeOnCurrent("/sign-up")}
                       className="flex items-center w-full font-semibold text-teal-800 py-3 px-2 rounded-lg hover:bg-teal-50 transition-colors mt-2"
-                      href="/sign-up"
                     >
-                      Get started
+                      Sign up
                       <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
+                    </RegisterLink>
                   </li>
                   <li className="my-2 h-px w-full bg-gray-200" />
                   <li>
-                    <Link
+                    <LoginLink
                       onClick={() => closeOnCurrent("/sign-in")}
                       className="flex items-center w-full font-semibold py-3 px-2 rounded-lg hover:bg-gray-50 transition-colors"
-                      href="/sign-in"
                     >
                       Sign in
-                    </Link>
+                    </LoginLink>
                   </li>
                   <li className="my-2 h-px w-full bg-gray-200" />
                   <li>

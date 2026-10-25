@@ -32,7 +32,6 @@ const UserAccountNav = ({
   subscriptionPlan = "FREE",
 }: UserAccountNavProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   // Fetch user settings from database to get updated profile info
   const { data: dbSettings } = trpc.getUserSettings.useQuery();
@@ -51,22 +50,18 @@ const UserAccountNav = ({
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <div 
-          className="relative z-50"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+        <Button
+          variant="ghost"
+          className={cn(
+            "relative z-50 h-10 w-10 rounded-full p-0 transition-colors",
+            "border-0 bg-transparent hover:bg-slate-100 dark:hover:bg-secondary"
+          )}
+          aria-label="Open profile menu"
+          title="Profile"
         >
-          <Button
-            variant="ghost"
-            className={cn(
-              "relative h-10 w-10 rounded-full transition-all duration-200 p-0",
-              isHovered && "scale-110 shadow-lg",
-              "bg-transparent hover:bg-white/10 border-0"
-            )}
-          >
             <div className="relative w-8 h-8 rounded-full">
             
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full animate-pulse" />
+              <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-blue-400 to-purple-500" />
               
               <Avatar className="relative w-8 h-8 rounded-full">
                 {displayImage ? (
@@ -82,7 +77,7 @@ const UserAccountNav = ({
                 ) : (
                   <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white font-semibold text-sm border-0 rounded-full w-full h-full relative">
                     <div className="relative w-full h-full rounded-full bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center">
-                      <span className="animate-bounce text-xs font-bold text-white z-10">
+                      <span className="z-10 text-xs font-bold text-white">
                         {getInitials(displayName)}
                       </span>
                      
@@ -92,13 +87,12 @@ const UserAccountNav = ({
                 )}
               </Avatar>
             </div>
-          </Button>
-        </div>
+        </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
         className={cn(
-          "bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50",
+          "bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:bg-popover dark:text-popover-foreground dark:border-border",
           "min-w-[280px] p-0 animate-in slide-in-from-top-2 duration-200"
         )}
         align="end"
@@ -122,7 +116,7 @@ const UserAccountNav = ({
               <div className="relative">
                 <Avatar className="w-12 h-12 rounded-full shadow-md relative">
                  
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full animate-pulse" />
+                  <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-blue-400 to-purple-500" />
                   <div className="relative w-full h-full bg-red rounded-full p-1">
                     {displayImage ? (
                       <div className="relative aspect-square h-full w-full rounded-full overflow-hidden">
@@ -184,7 +178,7 @@ const UserAccountNav = ({
               href="/dashboard"
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-                "hover:bg-blue-50 hover:scale-[1.02] active:scale-95 cursor-pointer group"
+                "hover:bg-blue-50 hover:scale-[1.02] active:scale-95 cursor-pointer group dark:hover:bg-secondary"
               )}
             >
               <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
@@ -203,7 +197,7 @@ const UserAccountNav = ({
               href="/dashboard/settings"
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-                "hover:bg-purple-50 hover:scale-[1.02] active:scale-95 cursor-pointer group"
+                "hover:bg-purple-50 hover:scale-[1.02] active:scale-95 cursor-pointer group dark:hover:bg-secondary"
               )}
             >
               <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
@@ -222,7 +216,7 @@ const UserAccountNav = ({
               href="/dashboard/billing"
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-                "hover:bg-green-50 hover:scale-[1.02] active:scale-95 cursor-pointer group"
+                "hover:bg-green-50 hover:scale-[1.02] active:scale-95 cursor-pointer group dark:hover:bg-secondary"
               )}
             >
               <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center group-hover:bg-green-200 transition-colors">
@@ -241,7 +235,7 @@ const UserAccountNav = ({
               href="/pricing"
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-                "hover:bg-gradient-to-r hover:from-pink-50 hover:to-orange-50 hover:scale-[1.02] active:scale-95 cursor-pointer group"
+                "hover:bg-gradient-to-r hover:from-pink-50 hover:to-orange-50 hover:scale-[1.02] active:scale-95 cursor-pointer group dark:hover:bg-secondary"
               )}
             >
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-100 to-orange-100 flex items-center justify-center group-hover:from-pink-200 group-hover:to-orange-200 transition-all">
@@ -268,7 +262,7 @@ const UserAccountNav = ({
               postLogoutRedirectURL="/"
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-                "hover:bg-red-50 hover:scale-[1.02] active:scale-95 cursor-pointer group w-full"
+                "hover:bg-red-50 hover:scale-[1.02] active:scale-95 cursor-pointer group w-full dark:hover:bg-secondary"
               )}
             >
               <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center group-hover:bg-red-200 transition-colors">
