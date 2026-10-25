@@ -282,14 +282,19 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
   }, [highlightsQuery.error, toast]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('pdf-theme');
-      
-      if (savedTheme === 'dark') {
-        setIsDarkMode(true);
-      }
-    }
-  }, [url]);
+    const syncTheme = () => {
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
+    };
+
+    syncTheme();
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (
@@ -350,13 +355,6 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
     toast,
     url,
   ]);
-
-  // Save theme preference
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('pdf-theme', isDarkMode ? 'dark' : 'light');
-    }
-  }, [isDarkMode]);
 
   // Update reading progress
   useEffect(() => {
@@ -590,8 +588,8 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
         <div className={cn(
           "h-12 sm:h-16 w-full border-b flex items-center justify-between px-2 sm:px-4 rounded-t-md sm:rounded-t-2xl",
           isDarkMode 
-            ? "bg-gray-800/90 border-gray-700" 
-            : "bg-[#F8FAFA] border-zinc-200"
+            ? "bg-gray-800/90 border-gray-700 text-gray-100 [&_button:hover]:bg-gray-700 [&_button:hover]:text-white [&_button:focus-visible]:ring-2 [&_button:focus-visible]:ring-teal-300"
+            : "bg-[#F8FAFA] border-zinc-200 text-slate-700"
         )}>
           {/* Left Controls */}
           <div className="flex items-center gap-1 sm:gap-2">
@@ -700,7 +698,9 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                   aria-label="show highlights and notes"
                   className={cn(
                     "rounded-full transition-colors",
-                    showHighlights && "bg-teal-50 text-teal-800 ring-1 ring-teal-700"
+                    showHighlights && (isDarkMode
+                      ? "bg-teal-400/20 text-teal-100 ring-1 ring-teal-300"
+                      : "bg-teal-50 text-teal-800 ring-1 ring-teal-700")
                   )}
                 >
                   <StickyNote className="h-3 w-3" />
@@ -719,7 +719,9 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                     size="sm"
                     className={cn(
                       "rounded-full transition-colors",
-                      isHighlightMode && "bg-teal-50 text-teal-800 ring-1 ring-teal-700"
+                      isHighlightMode && (isDarkMode
+                        ? "bg-teal-400/20 text-teal-100 ring-1 ring-teal-300"
+                        : "bg-teal-50 text-teal-800 ring-1 ring-teal-700")
                     )}
                   >
                     <Highlighter className="h-4 w-4" />
@@ -739,7 +741,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                     <Palette className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className={isDarkMode ? "bg-gray-800 border-gray-700" : ""}>
+                <DropdownMenuContent className={isDarkMode ? "bg-gray-800 border-gray-700 text-gray-100 [&_[role=menuitem]:focus]:bg-gray-700 [&_[role=menuitem]:focus]:text-white" : ""}>
                   <div className="p-2">
                     <div className="text-xs font-medium mb-2 text-center">Highlight Colors</div>
                     <div className="grid grid-cols-3 gap-2">
@@ -772,7 +774,9 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                       size="sm"
                       className={cn(
                         "rounded-full transition-all duration-200",
-                        showHighlights && "bg-teal-50 text-teal-800 ring-1 ring-teal-700"
+                        showHighlights && (isDarkMode
+                          ? "bg-teal-400/20 text-teal-100 ring-1 ring-teal-300"
+                          : "bg-teal-50 text-teal-800 ring-1 ring-teal-700")
                       )}
                     >
                       <Eye className="h-4 w-4" />
@@ -801,7 +805,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                     <ChevronDown className="h-3 w-3 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className={isDarkMode ? "bg-gray-800 border-gray-700" : ""}>
+                <DropdownMenuContent className={isDarkMode ? "bg-gray-800 border-gray-700 text-gray-100 [&_[role=menuitem]:focus]:bg-gray-700 [&_[role=menuitem]:focus]:text-white" : ""}>
                   <DropdownMenuItem onSelect={() => setScale(0.5)}>
                     <ZoomOut className="mr-2 h-4 w-4" />
                     50%
@@ -825,7 +829,7 @@ const PdfRenderer = ({ fileId, url }: PdfRendererProps) => {
                     <Menu className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className={isDarkMode ? "bg-gray-800 border-gray-700" : ""}>
+                <DropdownMenuContent className={isDarkMode ? "bg-gray-800 border-gray-700 text-gray-100 [&_[role=menuitem]:focus]:bg-gray-700 [&_[role=menuitem]:focus]:text-white" : ""}>
                   <DropdownMenuItem onClick={() => setRotation((prev) => (prev + 90) % 360)}>
                     <RotateCw className="mr-2 h-4 w-4" />
                     Rotate
